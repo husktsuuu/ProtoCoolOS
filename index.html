@@ -1,345 +1,141 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProtoCool OS</title>
+    <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Estilos -->
     <link rel="stylesheet" href="style.css">
-    <title>ProtoCool OS</title>
 </head>
 
 <body>
-
     <div class="main">
         <!-- Navbar -->
         <div class="navbar">
-            <a href="#" class="logo">ProtoCool OS</a>
-            <!--
-            <div class="nav-links">
-                <span class="item selected">Home</span>
-            </div>
-            -->
+            <a href="#" class="logo">Ratatuil</a>
             <div class="nav-buttons" id="navMenu">
-                <a href="Grafos1/indexGrafos.html">
+                <a href="../index.html">
+                    <button class="nav-btn">HOME</button>
+                </a>
+                <a href="../Grafos1/indexGrafos.html">
                     <button class="nav-btn">GRAFOS</button>
                 </a>
-                <a href="Asigancion/indexAsignacion.html">
-                    <button class="nav-btn">ASIGNACIÓN</button>
-                </a>
-                <a href="Johnson/indexJohnson.html">
+                <a href="../Johnson/indexJohnson.html">
                     <button class="nav-btn">JOHNSON</button>
                 </a>
-                <a href="NorthWest/indexNorth.html">
+                <a href="../Asigancion/indexAsignacion.html">
+                    <button class="nav-btn">ASIGNACIÓN</button>
+                </a>
+                <a href="../NorthWest/indexNorth.html">
                     <button class="nav-btn">NORTH WEST</button>
                 </a>
-                <a href="Sort/indexSort.html">
-                    <button class="nav-btn">SORT</button>
+                <a href="../Sort/indexSort.html">
+                    <button class="nav-btn selected">SORT</button>
                 </a>
-                <a href="ArbolBinario/indexArbol.html">
+                <a href="../ArbolBinario/indexArbol.html">
                     <button class="nav-btn">ARBOL BINARIO</button>
                 </a>
-                <a href="/Kruskal/indexkruskal.html">
+                <a href="../Kruskal/indexKruskal.html">
                     <button class="nav-btn">KRUSKAL</button>
                 </a>
-                <a href="../Dijkstra/indexdijkstra.html">
-                    <button class="nav-btn">DIJKSTRA</button>
-                </a>
-                <a href="../Compet/indexCompet.html">
-                    <button class="nav-btn">COMPET</button>
-                </a>
-                <a href="Contacto/indexContacto.html">
-                    <button class="nav-btn">CONTACTO</button>
-                </a>
             </div>
-
-            <button class="toggler">
-                <i class='bx bx-menu'></i>
-            </button>
         </div>
         <!-- End of Navbar -->
 
         <!-- Top Container -->
         <div class="top-container">
             <div class="info-box">
-                <p class="header">
-                    ¿Qué son los algoritmos?
-                </p>
+                <p class="header">¿Qué son los algoritmos?</p>
                 <p class="info-text">
-                    Un algoritmo es un conjunto ordenado de pasos definidos y finitos que se utilizan para resolver un problema o realizar una tarea específica. Los algoritmos son la base de la programación y la informática en general. Pueden ser simples o complejos, pero todos siguen un conjunto de reglas para producir un resultado deseado.
+                    Un algoritmo es un conjunto ordenado de pasos definidos y finitos que se utilizan para resolver un problema o realizar una tarea específica. 
+                    Son la base de la programación y pueden ser simples o complejos, pero todos siguen reglas para producir un resultado deseado.
                 </p>
                 <div class="info-buttons">
                     <button id="scroll" class="info-btn selected">Explorar</button>
-                    
                 </div>
             </div>
             <div class="nft-box">
-                <img src="logo_de_ProtoCool_OSv2.png" class="nft-pic">
+                <img src="ratatuill.jpg" class="nft-pic" alt="Logo ProtoCool OS">
                 <div class="nft-content">
                     <div class="info">
-                        <!-- <img src="logo.png" class="info-img"> -->
-                        <div>
-                            <p>
-                                ProtoCool OS
-                            </p>
-                        </div>
+                        <p>Ratatuil</p>
                     </div>
                     <div class="likes">
-                        <div class="heart-container">
+                        <!--<div class="heart-container">
                             <span class="heart" id="likeHeart">&#10084;</span>
                             <span id="likesCounter">0</span> Likes
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>
         </div>
         <!-- End of Top Container -->
 
-        <!-- Get Stearted -->
+        <!-- Get Started -->
         <div class="get-started">
             <p class="header">Conozcamos un poco más acerca de los algoritmos</p>
             <p class="info-text">Ventajas de usar algoritmos</p>
             <div class="items-box">
-                <div class="item-container">
-                    <div class="item">
-                        <i class='bx bx-check-shield'></i>
-                    </div>
-                    <p> Eficiencia </p>
-                </div>
-                <div class="item-container">
-                    <div class="item">
-                        <i class='bx bx-edit-alt'></i>
-                    </div>
-                    <p>Precisión </p>
-                </div>
-                <div class="item-container">
-                    <div class="item">
-                        <i class='bx bxl-deezer'></i>
-                    </div>
-                    <p>Escalabilidad</p>
-                </div>
-                <div class="item-container">
-                    <div class="item">
-                        <i class='bx bx-rocket'></i>
-                    </div>
-                    <p>Automatización</p>
-                </div>
+                <div class="item-container"><div class="item"><i class='bx bx-check-shield'></i></div><p>Eficiencia</p></div>
+                <div class="item-container"><div class="item"><i class='bx bx-edit-alt'></i></div><p>Precisión</p></div>
+                <div class="item-container"><div class="item"><i class='bx bxl-deezer'></i></div><p>Escalabilidad</p></div>
+                <div class="item-container"><div class="item"><i class='bx bx-rocket'></i></div><p>Automatización</p></div>
             </div>
 
-            <p class="info-text">Ejemplos de los algoritmos en la vida cotidiana</p>
+            <p class="info-text">Ejemplos en la vida cotidiana</p>
             <div class="sl-nft">
-                <div class="item">
-                    <div class="header">
-                        <i class='bx bxs-album'></i>
-                        <h5> Sugerencia de Contenido</h5>
-                    </div>
-                    <p class="info-text">Utilizado por plataformas como Netflix y Spotify para sugerir películas,
-                         videos o música basándose en tus preferencias pasadas.</p>
-                </div>
-                <div class="item">
-                    <div class="header">
-                        <i class='bx bx-map'></i>
-                        <h5>Algoritmo de Navegación GPS</h5>
-                    </div>
-                    <p class="info-text">Empleado por aplicaciones como Google Maps para calcular la ruta más rápida hacia tu destino, 
-                        considerando el tráfico en tiempo real y otras variables.</p>
-                </div>
-                <div class="item">
-                    <div class="header">
-                        <i class='bx bx-search-alt-2' ></i>
-                        <h5> Motores de Búsqueda</h5>
-                    </div>
-                    <p class="info-text">Utilizado por motores como Google para indexar y clasificar páginas web, 
-                        ofreciendo resultados relevantes a las consultas de los usuarios.</p>
-                </div>
+                <div class="item"><div class="header"><i class='bx bxs-album'></i><h5>Sugerencia de Contenido</h5></div><p class="info-text">Netflix o Spotify recomiendan películas o música según tus preferencias.</p></div>
+                <div class="item"><div class="header"><i class='bx bx-map'></i><h5>Algoritmo GPS</h5></div><p class="info-text">Google Maps calcula rutas rápidas considerando el tráfico en tiempo real.</p></div>
+                <div class="item"><div class="header"><i class='bx bx-search-alt-2'></i><h5>Motores de Búsqueda</h5></div><p class="info-text">Google indexa y clasifica páginas web ofreciendo resultados relevantes.</p></div>
             </div>
-                  <p class="info-text">Información didáctica</p>
-        <div class="sl-nft">
-              <!-- Video 1 -->
-                <div class="item">
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/U3CGMyjzlvM" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-                <!-- Video 2 -->
-                <div class="item">
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/qoDs0W5-Qv4?si=wZ1UsitnPnFlvQXN" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-                <!-- Video 3 -->
-                <div class="item">
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/fMCDM2GtWEo?si=LwZf0zCLdc-3-8Xm" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                </div>
-                <!-- Video 4 -->
-                <div class="item">
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/XNWKJsDNScw?si=1HXkvjEHGDbLWqz3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>            
-             </div>
-    </div> 
+
+            <p class="info-text">Información didáctica</p>
+            <div class="sl-nft">
+                <div class="item"><div class="video-container"><iframe src="https://www.youtube.com/embed/U3CGMyjzlvM" frameborder="0" allowfullscreen></iframe></div></div>
+                <div class="item"><div class="video-container"><iframe src="https://www.youtube.com/embed/qoDs0W5-Qv4" frameborder="0" allowfullscreen></iframe></div></div>
+                <div class="item"><div class="video-container"><iframe src="https://www.youtube.com/embed/XNWKJsDNScw" frameborder="0" allowfullscreen></iframe></div></div>
+            </div>
+        </div>
         <!-- End of Get Started -->
+
+        <!-- Tarjetas -->
         <p class="info-text">ALGORITMOS</p>
         <div class="card-container">
-            <!-- Tarjeta adicional 1 -->
-            <div class="container noselect">
-            <div class="canvas">
-              <div class="tracker tr-1"></div>
-              <div class="tracker tr-2"></div>
-              <div class="tracker tr-3"></div>
-              <div class="tracker tr-4"></div>
-              <div class="tracker tr-5"></div>
-              <div class="tracker tr-6"></div>
-              <div class="tracker tr-7"></div>
-              <div class="tracker tr-8"></div>
-              <div class="tracker tr-9"></div>
-              <div class="tracker tr-10"></div>
-              <div class="tracker tr-11"></div>
-              <div class="tracker tr-12"></div>
-              <div class="tracker tr-13"></div>
-              <div class="tracker tr-14"></div>
-              <div class="tracker tr-15"></div>
-              <div class="tracker tr-16"></div>
-              <div class="tracker tr-17"></div>
-              <div class="tracker tr-18"></div>
-              <div class="tracker tr-19"></div>
-              <div class="tracker tr-20"></div>
-              <div class="tracker tr-21"></div>
-              <div class="tracker tr-22"></div>
-              <div class="tracker tr-23"></div>
-              <div class="tracker tr-24"></div>
-              <div class="tracker tr-25"></div>
-              <div id="card">
-                <p id="prompt">JOHNSON</p>
-                <div class="title"><br>Este algoritmo se utiliza en la programación lineal para resolver problemas de asignación,
-                     donde se busca optimizar la asignación de recursos a diferentes tareas.
-                     Se enfoca en minimizar costos o maximizar la eficiencia al encontrar la solución óptima mediante técnicas de programación lineal.</div>
-                <div class="subtitle">
-                Algoritmo de Johnson
-                </div>
-                
-              </div>
-            </div>
-          </div>
-            <!-- Tarjeta adicional 2 -->
-            <div class="container noselect">
-                <div class="canvas">
-                <div class="tracker tr-1"></div>
-                <div class="tracker tr-2"></div>
-                <div class="tracker tr-3"></div>
-                <div class="tracker tr-4"></div>
-                <div class="tracker tr-5"></div>
-                <div class="tracker tr-6"></div>
-                <div class="tracker tr-7"></div>
-                <div class="tracker tr-8"></div>
-                <div class="tracker tr-9"></div>
-                <div class="tracker tr-10"></div>
-                <div class="tracker tr-11"></div>
-                <div class="tracker tr-12"></div>
-                <div class="tracker tr-13"></div>
-                <div class="tracker tr-14"></div>
-                <div class="tracker tr-15"></div>
-                <div class="tracker tr-16"></div>
-                <div class="tracker tr-17"></div>
-                <div class="tracker tr-18"></div>
-                <div class="tracker tr-19"></div>
-                <div class="tracker tr-20"></div>
-                <div class="tracker tr-21"></div>
-                <div class="tracker tr-22"></div>
-                <div class="tracker tr-23"></div>
-                <div class="tracker tr-24"></div>
-                <div class="tracker tr-25"></div>
-                <div id="card">
-                    <p id="prompt">ASIGNACION</p>
-                    <div class="title"><br>El algoritmo de asignación se utiliza para resolver problemas de asignación de recursos finitos a 
-                        tareas específicas, maximizando la eficiencia o minimizando los costos. Puede emplearse en diversas áreas como la logística, 
-                        la asignación de personal, entre otros, donde se necesite asignar recursos de manera óptima.</div>
-                    <div class="subtitle">
-                    Algoritmo de asignacion
-                    </div>
-                    
-                </div>
-                </div>
-            </div>
-
-                <!-- Tarjeta adicional 3 -->
-                <div class="container noselect">
-                <div class="canvas">
-                <div class="tracker tr-1"></div>
-                <div class="tracker tr-2"></div>
-                <div class="tracker tr-3"></div>
-                <div class="tracker tr-4"></div>
-                <div class="tracker tr-5"></div>
-                <div class="tracker tr-6"></div>
-                <div class="tracker tr-7"></div>
-                <div class="tracker tr-8"></div>
-                <div class="tracker tr-9"></div>
-                <div class="tracker tr-10"></div>
-                <div class="tracker tr-11"></div>
-                <div class="tracker tr-12"></div>
-                <div class="tracker tr-13"></div>
-                <div class="tracker tr-14"></div>
-                <div class="tracker tr-15"></div>
-                <div class="tracker tr-16"></div>
-                <div class="tracker tr-17"></div>
-                <div class="tracker tr-18"></div>
-                <div class="tracker tr-19"></div>
-                <div class="tracker tr-20"></div>
-                <div class="tracker tr-21"></div>
-                <div class="tracker tr-22"></div>
-                <div class="tracker tr-23"></div>
-                <div class="tracker tr-24"></div>
-                <div class="tracker tr-25"></div>
-                <div id="card">
-                    <p id="prompt">NORTHWEST</p>
-                        <div class="title"><br>Este método es una técnica sencilla utilizada en problemas de transporte y asignación. 
-                            Comienza asignando recursos desde la esquina noroeste de una matriz de costos o suministros, y luego avanza gradualmente 
-                            para satisfacer tanto la demanda como el suministro. Aunque puede no garantizar siempre la solución óptima, 
-                            es útil para una rápida aproximación en problemas de asignación de recursos.</div>
-                            <div class="subtitle">
-                                Algoritmo northwest
-                            </div>
-                        
-                        </div>
-                </div>
+            <div class="container noselect"><div id="card"><p id="prompt">JOHNSON</p><div class="title"><br>Resuelve problemas de asignación optimizando recursos.</div></div></div>
+            <div class="container noselect"><div id="card"><p id="prompt">ASIGNACIÓN</p><div class="title"><br>Permite distribuir recursos finitos maximizando eficiencia o minimizando costos.</div></div></div>
+            <div class="container noselect"><div id="card"><p id="prompt">NORTHWEST</p><div class="title"><br>Técnica usada en problemas de transporte y logística.</div></div></div>
         </div>
-        <i class="fas fa-comments" id="abrirChat"></i>
 
+        <!-- Chat -->
+        <i class="fas fa-comments" id="abrirChat"></i>
         <script>
-            // Manejar el evento de clic en el icono del chat
             document.getElementById('abrirChat').addEventListener('click', () => {
-                // Abre el chat utilizando la funcionalidad proporcionada por la librería de chat (por ejemplo, Poe.com)
-                window.open('https://poe.com/BotYamil', '_blank'); // Abre el chat en una nueva pestaña
+                window.open('https://poe.com/BotYamil', '_blank');
             });
         </script>
-
 
         <!-- Footer -->
         <div class="footer">
             <div class="footer-header">
-                "Los algoritmos son las herramientas que nos permiten convertir los desafíos en oportunidades, y cada línea de código es un paso más hacia el éxito."
+                "Los algoritmos son herramientas que convierten desafíos en oportunidades."
             </div>
             <div class="footer-links">
                 <div class="link">
                     <h5>Contacto</h5>
-                    <a href="Contacto/indexContacto.html">
-                        <p>Info del equipo</p>
-                    </a>
+                    <a href="Contacto/indexContacto.html"><p>Info del equipo</p></a>
                 </div>
-
             </div>
-
         </div>
         <!-- End of Footer -->
     </div>
+    
     <div class="copyright">
         <p>Copyright 2024, ProtoCool OS</p>
-          
     </div>
     <script src="index.js"></script>
 </body>
-
 </html>

@@ -1,241 +1,306 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const pasos = [
-        {
-            elemento: document.getElementById('navMenu'),
-            mensaje: 'Aquí puedes navegar a diferentes secciones de nuestro sitio.',
-        },
-        {
-            elemento: document.getElementById('graficoContainer'),
-            mensaje: 'Este es el área central de interacción donde puedes ver y editar los grafos.',
-            posicionMedio: true,
-        },
-        {
-            elemento: document.getElementById('cambiarColorBtn'),
-            mensaje: 'Aquí puedes cambiar el color de los nodos seleccionados.',
-        },
-        {
-            elemento: document.getElementById('cambiarColorTextoBtn'),
-            mensaje: 'Aquí puedes cambiar el color del texto.',
-        },
-        {
-            elemento: document.getElementById('cambiarColorAristaBtn'),
-            mensaje: 'Aquí puedes cambiar el color de las aritas .',
-        },
-        {
-            elemento: document.getElementById('eliminarBtn'),
-            mensaje: 'Usa este botón para eliminar nodos o conexiones seleccionados.',
-        },
-        {
-            elemento: document.getElementById('limpiarBtn'),
-            mensaje: 'Limpia el lienzo y empieza de nuevo.',
-        },
-        {
-            elemento: document.getElementById('guardarBtn'),
-            mensaje: 'Guarda el estado actual de tu grafo aquí.',
-        },
-        {
-            elemento: document.getElementById('cargarBtn'),
-            mensaje: 'Carga un grafo previamente guardado.',
-        },
-        {
-            elemento: document.getElementById('solMinBtn'),
-            mensaje: 'Aplica el algoritmo al caso y se mostrará la minimización.',
-        },
-        {
-            elemento: document.getElementById('solMaxBtn'),
-            mensaje: 'Aplica el algoritmo al caso y se mostrará la maximización.',
-        },
-        {
-            elemento: document.getElementById('volverColorOrig'),
-            mensaje: 'Borra la solucion y plantea una nueva.',
-        }
+document.addEventListener('DOMContentLoaded', function () {
+    const grafoContainer = document.getElementById('grafo-container');
+    const importarArchivo = document.getElementById('importarArchivo');
+    const colorPicker = document.getElementById('cambiarColorBtn');
+    const colorTextoPicker = document.getElementById('cambiarColorTextoBtn');
+    const colorAristaPicker = document.getElementById('cambiarColorAristaBtn');
+    const resultadoContainer = document.getElementById('resultado-container');
 
-    ];
-    let pasoActual = 0;
+    let estado = {
+        seleccionando: false,
+        nodoOrigen: null,
+        colorActual: '#d2e5ff',
+        colorTextoActual: '#ffffff',
+        modoEliminar: false
+    };
 
-    function mostrarPaso(paso) {
-        ocultarPasos();
-        removerDesenfoque();
-        aplicarDesenfoque();
-        paso.elemento.style.position = 'relative'; // Importante para que z-index funcione
-        paso.elemento.style.zIndex = '1006'; // Asegúrate de que esté por encima de la capa de desenfoque
+    let nodos = new vis.DataSet();
+    let aristas = new vis.DataSet();
+    let network = null;
+    let ultimoIdNodo = 0;
 
-        const tooltip = document.createElement('div');
-        tooltip.className = 'tooltip';
-        // Agrega tu HTML de tooltip aquí
-        tooltip.style.zIndex = '1006';
-        tooltip.innerHTML = `<p>${paso.mensaje}</p><div style="margin-top: 10px;">`;
+    const opciones = {
+        nodes: {
+            shape: 'circle',
+            font: { size: 14, color: estado.colorTextoActual },
+            borderWidth: 2,
+            scaling: { min: 16, max: 32 }
+        },
+        edges: { arrows: '', font: { align: 'top' } },
+        physics: { enabled: false },
+        interaction: { dragNodes: true, selectConnectedEdges: false }
+    };
 
-        if (pasoActual > 0) {
-            tooltip.innerHTML += `<button onclick="anteriorPaso()" style="margin-right: 5px;"><span style="margin-right: 5px;">←</span></button>`;
-        }
+    // ===== INICIALIZAR RED =====
+    function inicializarRed() {
+        const datos = { nodes: nodos, edges: aristas };
+        network = new vis.Network(grafoContainer, datos, opciones);
 
-        if (pasoActual < pasos.length - 1) {
-            tooltip.innerHTML += `<button onclick="siguientePaso()"><span style="margin-left: 5px;">✓</span></button>`;
-        } else {
-            tooltip.innerHTML += `<button onclick="finalizarTutorial()"><span style="margin-left: 5px;">✓</span></button>`;
-        }
-        if (pasoActual === 1) { // Recordando que los índices comienzan en 0
-            agregarBotonVideo(paso.elemento);
-        }
-        tooltip.innerHTML += `</div>`;
-        document.body.appendChild(tooltip);
+        network.on("click", function (params) {
+            if (estado.modoEliminar) {
+                const nodeId = this.getNodeAt(params.pointer.DOM);
+                const edgeId = this.getEdgeAt(params.pointer.DOM);
+                if (nodeId) {
+                    nodos.remove({ id: nodeId });
+                    const asociadas = aristas.get({ filter: a => a.from === nodeId || a.to === nodeId });
+                    aristas.remove(asociadas);
+                } else if (edgeId) {
+                    aristas.remove({ id: edgeId });
+                }
+                return;
+            }
 
-        ajustarZIndex(paso.elemento, tooltip);
+            // Crear nodo
+            if (params.nodes.length === 0 && params.edges.length === 0) {
+                const c = params.pointer.canvas;
+                const nombre = prompt("Ingrese el nombre del nodo:", `Nodo ${ultimoIdNodo + 1}`);
+                if (nombre !== null && nombre.trim() !== "") crearNodo(c.x, c.y, estado.colorActual, nombre);
+                return;
+            }
 
+            // Crear arista
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                if (estado.seleccionando) {
+                    const origen = estado.nodoOrigen;
+                    const destino = nodeId;
 
-        const rect = paso.elemento.getBoundingClientRect();
-        tooltip.style.position = 'absolute';
-        tooltip.style.left = `${rect.left}px`;
-        tooltip.style.top = `${rect.bottom + window.scrollY}px`;
+                    if (origen === destino) {
+                        alert("❌ No se puede crear una arista hacia el mismo nodo.");
+                        estado.seleccionando = false;
+                        estado.nodoOrigen = null;
+                        return;
+                    }
 
-        if (paso.posicionMedio) {
-            tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
-            tooltip.style.top = `${rect.top + window.scrollY + rect.height / 2 - tooltip.offsetHeight / 2}px`;
-        }
-        const botonExistente = document.getElementById('botonVideo');
-        if (botonExistente) {
-            botonExistente.remove(); // Eliminar el botón existente antes de crear uno nuevo
-        }
-        
-        paso.elemento.classList.add('resaltar');
-        aplicarDesenfoque();
+                    if (aristaDuplicada(origen, destino)) {
+                        alert("⚠️ Ya existe una arista entre estos nodos.");
+                        estado.seleccionando = false;
+                        estado.nodoOrigen = null;
+                        return;
+                    }
+
+                    let peso;
+                    do {
+                        peso = prompt("Ingrese el peso de la arista:", "");
+                        if (peso === null) break;
+                    } while (isNaN(peso) || peso.trim() === "");
+
+                    if (peso !== null) {
+                        aristas.add({ from: origen, to: destino, label: peso });
+                    }
+                    estado.seleccionando = false;
+                    estado.nodoOrigen = null;
+                } else {
+                    estado.seleccionando = true;
+                    estado.nodoOrigen = nodeId;
+                }
+            }
+        });
+
+        // Click derecho editar
+        network.on("oncontext", function (params) {
+            params.event.preventDefault();
+            const n = this.getNodeAt(params.pointer.DOM);
+            const e = this.getEdgeAt(params.pointer.DOM);
+            if (n !== undefined) {
+                const nuevo = prompt("Nuevo nombre del nodo:", "");
+                if (nuevo !== null) nodos.update({ id: n, label: nuevo });
+            } else if (e !== undefined) {
+                const nuevo = prompt("Nuevo peso:", "");
+                if (nuevo !== null) aristas.update({ id: e, label: nuevo });
+            }
+        });
     }
-    function agregarBotonVideo(tooltip) {
-        const botonVideo = document.createElement('button');
-        botonVideo.id = 'botonVideo'; // Agregar un ID para referencia de estilos CSS
-        botonVideo.classList.add('boton-resplandor'); // Clase para animación de resplandor
-        
-        // Crear el ícono de video y añadirlo al botón
-        const iconoVideo = document.createElement('i');
-        iconoVideo.className = 'bx bxs-videos'; // Usa la clase del icono de Boxicons
-        iconoVideo.style.color = 'white'; // Color del ícono
-        iconoVideo.style.fontSize = '30px'; // Tamaño del ícono
-    
-        botonVideo.appendChild(iconoVideo);
-    
-        botonVideo.onclick = function() {
-            reproducirVideo();
+
+    // ===== FUNCIONES BASE =====
+    function crearNodo(x, y, color, nombre) {
+        ultimoIdNodo++;
+        nodos.add({
+            id: ultimoIdNodo,
+            label: nombre,
+            x, y,
+            color: { background: color },
+            font: { color: estado.colorTextoActual },
+            physics: false
+        });
+    }
+
+    function aristaDuplicada(o, d) {
+        return aristas.get({
+            filter: i => (i.from === o && i.to === d) || (i.from === d && i.to === o)
+        }).length > 0;
+    }
+
+    function restaurarColores() {
+        nodos.forEach(n => nodos.update({ id: n.id, color: { background: estado.colorActual } }));
+        aristas.forEach(e => aristas.update({ id: e.id, color: { color: colorAristaPicker.value }, width: 1 }));
+        resultadoContainer.textContent = '';
+    }
+
+    // ===== ALGORITMO KRUSKAL =====
+    function ejecutarKruskal(tipo = 'min') {
+        const edges = aristas.get().map(e => ({
+            id: e.id, peso: parseFloat(e.label), from: e.from, to: e.to
+        }));
+
+        if (edges.length === 0) {
+            alert("No hay aristas en el grafo.");
+            return;
+        }
+
+        edges.sort((a, b) => tipo === 'min' ? a.peso - b.peso : b.peso - a.peso);
+
+        const parent = {};
+        function find(x) { return parent[x] ? find(parent[x]) : x; }
+        function union(x, y) { parent[find(x)] = find(y); }
+
+        const seleccionadas = [];
+        let total = 0;
+
+        edges.forEach(e => {
+            if (find(e.from) !== find(e.to)) {
+                union(e.from, e.to);
+                seleccionadas.push(e);
+                total += e.peso;
+            }
+        });
+
+        // Detectar componentes
+        const componentes = new Set(nodos.getIds().map(find));
+        if (componentes.size > 1) {
+            alert(`⚠️ El grafo no es conexo. Se generó un bosque de expansión mínima con ${componentes.size} componentes.`);
+        }
+
+        // Deseleccionar nodos
+        network.unselectAll();
+
+        // Reset
+        restaurarColores();
+
+        const colorResaltado = tipo === 'min' ? '#00A86B' : '#E53935';
+        const nodosUsados = new Set();
+
+        // Pintar árbol completo
+        seleccionadas.forEach(e => {
+            aristas.update({ id: e.id, color: { color: colorResaltado }, width: 3 });
+            nodosUsados.add(e.from);
+            nodosUsados.add(e.to);
+        });
+
+        nodosUsados.forEach(id => {
+            nodos.update({ id, color: { background: colorResaltado }, font: { color: '#ffffff' } });
+        });
+
+        resultadoContainer.innerHTML =
+            `<b>${tipo === 'min' ? 'Árbol de costo mínimo' : 'Árbol de costo máximo'}:</b> ` +
+            seleccionadas.map(e => `${e.peso}`).join(' + ') + ` = <b>${total}</b>`;
+    }
+
+    // ===== BOTONES =====
+    document.getElementById('btnMin').addEventListener('click', () => ejecutarKruskal('min'));
+    document.getElementById('btnMax').addEventListener('click', () => ejecutarKruskal('max'));
+    document.getElementById('volverColorOrig').addEventListener('click', restaurarColores);
+    document.getElementById('limpiarBtn').addEventListener('click', () => location.reload());
+
+    document.getElementById('eliminarBtn').addEventListener('click', function () {
+        estado.modoEliminar = !estado.modoEliminar;
+        grafoContainer.style.cursor = estado.modoEliminar ? 'crosshair' : 'default';
+        alert(estado.modoEliminar ? '🗑️ Modo eliminar activado' : 'Modo eliminar desactivado');
+    });
+
+    // ===== EXPORTAR / IMPORTAR =====
+    document.getElementById('guardarBtn').addEventListener('click', function () {
+        const exportOptions = document.getElementById('exportOptions');
+        exportOptions.style.display = exportOptions.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('exportPNG').addEventListener('click', async function () {
+        const nombreArchivo = prompt("Ingrese el nombre del archivo:", "grafo.png") || "grafo.png";
+        const canvas = await html2canvas(grafoContainer, { backgroundColor: "#ffffff" });
+        const link = document.createElement("a");
+        link.download = nombreArchivo;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        document.getElementById('exportOptions').style.display = 'none';
+    });
+
+    document.getElementById('exportPDF').addEventListener('click', async function () {
+        const nombreArchivo = prompt("Ingrese el nombre del archivo:", "grafo.pdf") || "grafo.pdf";
+        const canvas = await html2canvas(grafoContainer, { backgroundColor: "#ffffff" });
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jspdf.jsPDF({ orientation: "landscape" });
+        const imgWidth = pdf.internal.pageSize.getWidth() - 20;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
+        pdf.save(nombreArchivo);
+        document.getElementById('exportOptions').style.display = 'none';
+    });
+
+    document.getElementById('exportJSON').addEventListener('click', function () {
+        const nombreArchivo = prompt("Ingrese el nombre del archivo:", "grafo.json") || "grafo.json";
+        const datos = {
+            nodos: nodos.get({ returnType: "Object" }),
+            aristas: aristas.get(),
+            estado
         };
+        const blob = new Blob([JSON.stringify(datos, null, 2)], { type: "application/json" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = nombreArchivo;
+        link.click();
+        URL.revokeObjectURL(link.href);
+        document.getElementById('exportOptions').style.display = 'none';
+    });
 
-    
-        tooltip.appendChild(botonVideo); // Añade el botón al tooltip en lugar de al body
+    document.getElementById('cargarBtn').addEventListener('click', () => importarArchivo.click());
+    importarArchivo.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = f => {
+            const datos = JSON.parse(f.target.result);
+            nodos.clear(); aristas.clear();
+            nodos.add(Object.values(datos.nodos));
+            aristas.add(datos.aristas);
+            estado = datos.estado;
+            colorPicker.value = estado.colorActual;
+            ultimoIdNodo = Math.max(...Object.values(datos.nodos).map(n => n.id));
+        };
+        reader.readAsText(file);
+    });
+
+    // ===== Inicializar =====
+    inicializarRed();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const helpBtn = document.getElementById("helpBtn");
+    const helpPopup = document.getElementById("helpPopup");
+    const overlay = document.createElement("div");
+
+    overlay.id = "overlay";
+    document.body.appendChild(overlay);
+
+    function abrirPopup() {
+        overlay.style.display = "block";
+        helpPopup.style.display = "block";
     }
-    
-    
-    function reproducirVideo() {
-        // Obtén el tooltip actual por su clase o ID
-        const tooltip = document.querySelector('.tooltip');
-    
-        // Crea el contenedor para el video si aún no existe
-        let videoContainer = document.getElementById('videoContainer');
-        if (!videoContainer) {
-            videoContainer = document.createElement('div');
-            videoContainer.id = 'videoContainer';
-            videoContainer.style.position = 'fixed'; // O 'absolute' si el tooltip es parte de un contenedor posicionado
-            videoContainer.style.zIndex = '1007'; // Asegúrate de que esté por encima del desenfoque
-            videoContainer.style.left = '50%'; // Ajusta según la posición del tooltip en tu página
-            videoContainer.style.top = '50%'; // Ajusta según la posición del tooltip en tu página
-            videoContainer.style.transform = 'translate(-50%, -50%)'; // Centra el contenedor en la pantalla
-            videoContainer.style.maxWidth = '70vw'; // Usa un máximo del 70% del ancho de la ventana
-            videoContainer.style.maxHeight = '70vh'; // Usa un máximo del 70% del alto de la ventana
-            document.body.appendChild(videoContainer);
+
+    function cerrarPopup() {
+        overlay.style.display = "none";
+        helpPopup.style.display = "none";
+    }
+
+    helpBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        abrirPopup();
+    });
+
+    overlay.addEventListener("click", cerrarPopup);
+
+    document.addEventListener("click", (e) => {
+        if (!helpPopup.contains(e.target) && e.target !== helpBtn) {
+            cerrarPopup();
         }
-    
-        // Vacía cualquier contenido anterior
-        videoContainer.innerHTML = '';
-    
-        // Crea el elemento video y sus fuentes
-        const video = document.createElement('video');
-        video.controls = true;
-        video.autoplay = true; // Esto inicia la reproducción automáticamente cuando se crea el elemento
-        video.style.width = '100%'; // Hace que el video llene el contenedor
-        video.style.height = '100%'; // Hace que el video llene el contenedor
-        video.innerHTML = '<source src="VideoTutorialGrafos.mp4" type="video/mp4">Tu navegador no soporta videos HTML5.';
-        
-        // Añade el video al contenedor
-        videoContainer.appendChild(video);
-        // Crea un botón para cerrar el video
-    const closeButton = document.createElement('button');
-    closeButton.innerText = 'X'; // Puedes reemplazar esto con un ícono de cerrar si lo prefieres
-    closeButton.style.position = 'absolute';
-    closeButton.style.top = '5px';
-    closeButton.style.right = '5px';
-    closeButton.style.zIndex = '1008'; // Asegúrate de que esté por encima del video
-    closeButton.style.background = 'none';
-    closeButton.style.border = 'none';
-    closeButton.style.color = 'white';
-    closeButton.style.fontSize = '20px';
-    closeButton.style.cursor = 'pointer';
-
-    // Añade funcionalidad para cerrar el video
-    closeButton.onclick = function() {
-        videoContainer.remove(); // Elimina el contenedor de video
-    };
-
-    // Añade el botón de cierre al contenedor de video
-    videoContainer.appendChild(closeButton);
-    }
-    
-    
-    function ocultarPasos() {
-        document.querySelectorAll('.tooltip').forEach(tooltip => tooltip.remove());
-        document.querySelectorAll('.resaltar').forEach(elemento => elemento.classList.remove('resaltar'));
-        removerDesenfoque();
-    }
-    function ajustarZIndex(elemento, tooltip) {
-        elemento.style.position = 'relative';
-        elemento.style.zIndex = '1001';
-        tooltip.style.position = 'absolute';
-        tooltip.style.zIndex = '1001';
-    }
-    function aplicarDesenfoque() {
-    // Asegúrate de que la capa de desenfoque esté al fondo de todos los elementos excepto el fondo mismo
-    let capaDesenfoque = document.getElementById('capaDesenfoque');
-    if (!capaDesenfoque) {
-        capaDesenfoque = document.createElement('div');
-        capaDesenfoque.id = 'capaDesenfoque';
-        document.body.appendChild(capaDesenfoque);
-    }
-    capaDesenfoque.style.zIndex = "998"; // Asegura que esto sea menor que el tooltip y resaltar pero mayor que el fondo
-    capaDesenfoque.style.position = 'fixed';
-    capaDesenfoque.style.width = '100vw';
-    capaDesenfoque.style.height = '100vh';
-    capaDesenfoque.style.top = '0';
-    capaDesenfoque.style.left = '0';
-    capaDesenfoque.style.background = 'rgba(0,0,0,0.5)';
-    capaDesenfoque.style.backdropFilter = 'blur(4px)';
-}
-
-    function removerDesenfoque() {
-        const capaDesenfoque = document.getElementById('capaDesenfoque');
-        if (capaDesenfoque) {
-            capaDesenfoque.remove();
-        }
-    }
-
-    window.anteriorPaso = function() {
-        if (pasoActual > 0) {
-            pasoActual--;
-            mostrarPaso(pasos[pasoActual]);
-        }
-    };
-
-    window.siguientePaso = function() {
-        if (pasoActual < pasos.length - 1) {
-            pasoActual++;
-            mostrarPaso(pasos[pasoActual]);
-        }
-    };
-
-    window.finalizarTutorial = function() {
-        ocultarPasos();
-        removerDesenfoque();
-        pasoActual = 0;
-        alert('Fin del tutorial. Gracias por participar.');
-    };
-
-    document.getElementById('helpBtn').addEventListener('click', function() {
-        mostrarPaso(pasos[pasoActual]);
     });
 });

@@ -4,8 +4,9 @@
 <head>
     <link rel="stylesheet" href="styleSort.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
-    <script src="sortback.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="sortback.js"></script>
+    <script src="tutoSortO.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
@@ -15,13 +16,13 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Sort</title>
 </head>
-    
+
 <body>
 
     <div class="main">
         <!-- Navbar -->
         <div class="navbar">
-            <a href="#" class="logo">ProtoCool OS</a>
+            <a href="#" class="logo">Ratatuil</a>
             <!--
             <div class="nav-links">
                 <span class="item selected">Home</span>
@@ -52,20 +53,17 @@
                 <a href="../Kruskal/indexKruskal.html">
                     <button class="nav-btn">KRUSKAL</button>
                 </a>
-                <a href="../Dijkstra/indexdijkstra.html">
-                    <button class="nav-btn">DIJKSTRA</button>
-                </a>
-                <a href="../Compet/indexCompet.html">
+                <!--<a href="../Compet/indexCompet.html">
                     <button class="nav-btn">COMPET</button>
                 </a>
                 <a href="../Contacto/indexContacto.html">
                     <button class="nav-btn">CONTACTO</button>
-                </a>
+                </a>-->
             </div>
-    
-            <button class="toggler">
+
+            <!--<button class="toggler">
                 <i class='bx bx-menu'></i>
-            </button>
+            </button>-->
         </div>
         <!-- End of Navbar -->
 
@@ -81,27 +79,31 @@
                 <button id="cargarBtn">Importar</button>
                 <p id="text"> OPCIONES SORT</p>
                 <button id="selectionBtn" class="sortBtn" data-target="selectionOptions">Selection Sort</button>
-                <div id="selectionOptions" class="options" style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
+                <div id="selectionOptions" class="options"
+                    style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
                     <button id="SordenarBtn">Ordenar Lista Menor a Mayor</button>
                     <button id="SordenarDesBtn">Ordenar Lista Mayor a Menor</button>
                 </div>
                 <button id="insertionBtn" class="sortBtn" data-target="insertionOptions">Insertion Sort</button>
-                <div id="insertionOptions" class="options" style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
+                <div id="insertionOptions" class="options"
+                    style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
                     <button id="IordenarBtn">Ordenar Lista Menor a Mayor</button>
                     <button id="IordenarDesBtn">Ordenar Lista Mayor a Menor</button>
                 </div>
                 <button id="shellBtn" class="sortBtn" data-target="shellOptions">Shell Sort</button>
-                <div id="shellOptions" class="options" style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
+                <div id="shellOptions" class="options"
+                    style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
                     <button id="SHordenarBtn">Ordenar Lista Menor a Mayor</button>
                     <button id="SHordenarDesBtn">Ordenar Lista Mayor a Menor</button>
                 </div>
                 <button id="mergeBtn" class="sortBtn" data-target="mergeOptions">Merge Sort</button>
-                <div id="mergeOptions" class="options" style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
+                <div id="mergeOptions" class="options"
+                    style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
                     <button id="MordenarBtn">Ordenar Lista Menor a Mayor</button>
                     <button id="MordenarDesBtn">Ordenar Lista Mayor a Menor</button>
                 </div>
             </div>
-    
+
             <div class="graph-and-info-container">
                 <!-- Contenedor del Gráfico de Barras -->
                 <div id="graficoBarrasContainer">
@@ -123,23 +125,57 @@
 
         <button id="helpBtn">?</button>
         <div id="helpPopup" class="hidden">
-            <p>AYUDA</p>
-            <br>
-            <p>Dentro del contenedor de la izquierda:</p>
-            <p>- Para añadir un nodo: hacer click en la pantalla</p>
-            <p>- Para unir nodos: mantener click y llevar a otro nodo</p>
-            <p>- Para eliminar nodo: hacer click derecho en un nodo</p>
-            <p>- Para mover nodo: mantener presionado Ctrl y hacer click en el nodo</p>
-            <br>
-            <p>Fuera del contenedor:</p>
-            <p>- Presionar guardar para guardar</p>
-            <p>- Presionar limpiar para limpiar</p>
+            <h2>Guía de Uso – Módulo SORT</h2>
+
+            <h3>1. Manejo de Listas</h3>
+            <p>
+                • Agregar Lista: permite ingresar una lista manualmente.<br>
+                • Generar Random: genera una lista aleatoria.<br>
+                • Limpiar: borra todo.<br>
+                • Guardar: exporta la lista actual.<br>
+                • Importar: carga una lista guardada.
+            </p>
+
+            <h3>2. Algoritmos de Ordenamiento</h3>
+            <p>
+                Seleccione el algoritmo que desea aplicar:<br>
+                • Selection Sort<br>
+                • Insertion Sort<br>
+                • Shell Sort<br>
+                • Merge Sort<br><br>
+                Cada uno tiene dos modos:<br>
+                • Ordenar de Menor a Mayor<br>
+                • Ordenar de Mayor a Menor
+            </p>
+
+            <h3>3. Visualización</h3>
+            <p>
+                • El gráfico de barras muestra visualmente la lista.<br>
+                • Los cambios se actualizan automáticamente después de ordenar.<br>
+                • Se muestra también:<br>
+                - Lista original<br>
+                - Lista ordenada<br>
+                - Tiempo total de ejecución
+            </p>
+
+            <h3>4. Consejos</h3>
+            <p>
+                • Se recomienda generar listas cortas para ver claramente el efecto del algoritmo.<br>
+                • Los algoritmos tienen diferente velocidad, útil para compararlos.<br>
+                • Use guardar/importar para probar configuraciones repetidas.
+            </p>
         </div>
 
         <!-- End of Botón help -->
 
     </div>
-    <script src="tutoSortO.js"></script>
+    <!--<script src="tutoSortO.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="sortback.js"></script>
+    <script src="tutoSortO.js"></script>-->
 </body>
 
 </html>

@@ -2,152 +2,158 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="styleArbol.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
-    <script src="arbolback.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>Arbol Binario</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Árbol Binario</title>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styleArbol.css" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <!-- Librerías necesarias -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+
+  <!-- Scripts del proyecto -->
+  <script src="arbolback.js"></script>
+  <script src="tutoArBi.js"></script>
 </head>
-    
+
 <body>
-    <div class="main">
-        <!-- Navbar -->
-        <div class="navbar">
-            <a href="#" class="logo">ProtoCool OS</a>
-            <!--
-            <div class="nav-links">
-                <span class="item selected">Home</span>
-            </div>
-            -->
-            <div class="nav-buttons" id="navMenu">
-                <a href="../index.html">
-                    <button class="nav-btn">HOME</button>
-                </a>
-                <a href="../Grafos1/indexGrafos.html">
-                    <button class="nav-btn">GRAFOS</button>
-                </a>
-                <a href="../Johnson/indexJohnson.html">
-                    <button class="nav-btn">JOHNSON</button>
-                </a>
-                <a href="../Asigancion/indexAsignacion.html">
-                    <button class="nav-btn">ASIGNACIÓN</button>
-                </a>
-                <a href="../NorthWest/indexNorth.html">
-                    <button class="nav-btn">NORTH WEST</button>
-                </a>
-                <a href="../Sort/indexSort.html">
-                    <button class="nav-btn">SORT</button>
-                </a>
-                <a href="../ArbolBinario/indexArbol.html">
-                    <button class="nav-btn selected">ARBOL BINARIO</button>
-                </a>
-                <a href="../Kruskal/indexKruskal.html">
-                    <button class="nav-btn">KRUSKAL</button>
-                </a>
-                <a href="../Dijkstra/indexdijkstra.html">
-                    <button class="nav-btn">DIJKSTRA</button>
-                </a>
-                <a href="../Compet/indexCompet.html">
-                    <button class="nav-btn">COMPET</button>
-                </a>
-                <a href="../Contacto/indexContacto.html">
-                    <button class="nav-btn">CONTACTO</button>
-                </a>
-            </div>
-    
-            <button class="toggler">
-                <i class='bx bx-menu'></i>
-            </button>
+  <div class="main">
+    <!-- Navbar -->
+    <div class="navbar">
+      <a href="#" class="logo">Ratatuil</a>
+      <div class="nav-buttons" id="navMenu">
+        <a href="../index.html">
+          <button class="nav-btn">HOME</button>
+        </a>
+        <a href="../Grafos1/indexGrafos.html">
+          <button class="nav-btn">GRAFOS</button>
+        </a>
+        <a href="../Johnson/indexJohnson.html">
+          <button class="nav-btn">JOHNSON</button>
+        </a>
+        <a href="../Asigancion/indexAsignacion.html">
+          <button class="nav-btn">ASIGNACIÓN</button>
+        </a>
+        <a href="../NorthWest/indexNorth.html">
+          <button class="nav-btn">NORTH WEST</button>
+        </a>
+        <a href="../Sort/indexSort.html">
+          <button class="nav-btn">SORT</button>
+        </a>
+        <a href="../ArbolBinario/indexArbol.html">
+          <button class="nav-btn selected">ARBOL BINARIO</button>
+        </a>
+        <a href="../Kruskal/indexKruskal.html">
+          <button class="nav-btn">KRUSKAL</button>
+        </a>
+      </div>
+    </div>
+    <!-- End Navbar -->
+
+    <!-- Contenido principal -->
+    <div id="contenedor-general">
+      <!-- Panel lateral -->
+      <div id="opciones-container">
+        <p id="text">CREAR ÁRBOL</p>
+        <button id="agregarNumBtn">Agregar Número</button>
+        <button id="listaRandomBtn">Generar Random</button>
+
+        <p id="text">RECORRIDOS</p>
+        <button id="ordenarPreBtn">Pre-Order</button>
+        <button id="ordenarInBtn">In-Order</button>
+        <button id="ordenarPostBtn">Post-Order</button>
+
+        <p id="text">CREAR CON LISTAS</p>
+        <input id="inputPreOrder" type="text" placeholder="Ingresar Pre-Order" />
+        <button id="submitPreOrder">Guardar Pre-Order</button>
+        <input id="inputInOrder" type="text" placeholder="Ingresar In-Order" />
+        <button id="submitInOrder">Guardar In-Order</button>
+        <input id="inputPostOrder" type="text" placeholder="Ingresar Post-Order" />
+        <button id="submitPostOrder">Guardar Post-Order</button>
+
+        <p id="text">RECONSTRUCCIÓN</p>
+        <button id="reconstructPreIn">Pre + In Order</button>
+        <button id="reconstructInPost">In + Post Order</button>
+        <button id="reconstructPrePost">Pre + Post Order</button>
+
+        <p id="text">OPCIONES</p>
+        <button id="exportBtn">Exportar JSON</button>
+        <input type="file" id="importInput" accept=".json" style="display: none;" />
+        <button id="importBtn">Importar Árbol</button>
+        <button id="limpiarBtn">Limpiar</button>
+      </div>
+
+      <!-- Contenedor del árbol -->
+      <div class="arbol-container">
+        <div id="tree"></div>
+
+        <div id="resultado-container">
+          <p><span id="tipoOrden">--</span>: <span id="orden">--</span></p>
         </div>
-        <!-- End of Navbar -->
-
-        <!-- Top Container -->
-
-        <div id="logo"></div>
-        <div id="contenedor-general">
-            <div id="opciones-container">
-                <!-- Creación árbol desde 0 -->
-                <p id="text"> CREAR ÁRBOL</p>
-                <button id="agregarNumBtn">Agregar Número</button>
-                <button id="listaRandomBtn">Generar Random</button>
-               
-                <p id="text"> CREAR CON LISTAS</p>
-                <input id="inputPreOrder" type="text" placeholder="Ingresar Pre-Order" />
-                <button id="submitPreOrder">Guardar Pre-Order</button>
-                <input id="inputInOrder" type="text" placeholder="Ingresar In-Order" />
-                <button id="submitInOrder">Guardar In-Order</button>
-                <input id="inputPostOrder" type="text" placeholder="Ingresar Post-Order" />
-                <button id="submitPostOrder">Guardar Post-Order</button>
-
-                <p id="text"> RECONSTRUCCIÓN</p>
-                <button id="reconstructPreIn">Reconstruir con Pre-Order e In-Order</button>
-                <button id="reconstructInPost">Reconstruir con In-Order y Post-Order</button>
-                <button id="reconstructPrePost">Reconstruir con Pre-Order y Post-Order</button>
-
-                <!-- Mostrar recorrido Arbol según Pre, In y Post Order -->
-                <p id="text"> PRE, IN Y POST ORDER</p>
-                <button id="ordenarPreBtn">Ordenar Pre-Order</button>
-                <button id="ordenarInBtn">Ordenar In-Order</button>
-                <button id="ordenarPostBtn">Ordenar Post-Order</button>
-                
-                <!-- Limpiar todo -->
-                <p id="text"> OPCIONES</p>
-                <button id="exportBtn">Exportar JSON</button>
-                <input type="file" id="importInput" accept=".json" style="display: none;">
-                <button id="importBtn">Importar Arbol</button>
-                <button id="limpiarBtn">Limpiar</button>
-            </div>
-            <div class="arbol-container">
-                <div id="arbol-container">
-                    <div id="tree"></div>
-                </div>
-                <div id="resultado-container">
-                    <p><span id="tipoOrden">--</span>: <span id="orden">--</span></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Botón help -->
-
-        <button id="helpBtn">?</button>
-        <div id="helpPopup" class="hidden">
-            <p>AYUDA</p>
-            <br>
-            <p>Dentro del contenedor de la izquierda:</p>
-            <p>- Para añadir un nodo: hacer click en la pantalla</p>
-            <p>- Para unir nodos: mantener click y llevar a otro nodo</p>
-            <p>- Para eliminar nodo: hacer click derecho en un nodo</p>
-            <p>- Para mover nodo: mantener presionado Ctrl y hacer click en el nodo</p>
-            <br>
-            <p>Fuera del contenedor:</p>
-            <p>- Presionar guardar para guardar</p>
-            <p>- Presionar limpiar para limpiar</p>
-        </div>
-
-        <!-- End of Botón help -->
-
+      </div>
     </div>
 
-    <div id="modalContainer" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <div class="arbol-container">
-                <div id="tree"></div>
-                <div id="resultado-container">
-                    <p>In-Order: <span id="Inorden">--</span></p>
-                    <p>Post-Order: <span id="Postorden">--</span></p>
-                </div>
-            </div>
+    <!-- Botón de ayuda -->
+    <button id="helpBtn">?</button>
+    <div id="helpPopup" class="hidden">
+      <p><strong>AYUDA</strong></p>
+      <br>
+
+      <p><strong>CREAR ÁRBOL</strong></p>
+      <p>- <b>Agregar Número:</b> inserta un valor manualmente.</p>
+      <p>- <b>Generar Random:</b> crea un árbol con números aleatorios sin repetir.</p>
+
+      <br>
+      <p><strong>RECORRIDOS</strong></p>
+      <p>- <b>Pre-Order:</b> muestra recorrido Nodo – Izq – Der.</p>
+      <p>- <b>In-Order:</b> muestra recorrido Izq – Nodo – Der.</p>
+      <p>- <b>Post-Order:</b> muestra recorrido Izq – Der – Nodo.</p>
+
+      <br>
+      <p><strong>CREAR CON LISTAS</strong></p>
+      <p>- Ingresa listas Pre, In o Post separadas por coma.</p>
+      <p>- Guarda cada lista en el botón respectivo.</p>
+      <p>- Deben contener los mismos elementos para la reconstrucción.</p>
+
+      <br>
+      <p><strong>RECONSTRUCCIÓN</strong></p>
+      <p>- <b>Pre + In:</b> reconstruye el árbol original.</p>
+      <p>- <b>In + Post:</b> reconstruye el árbol original.</p>
+      <p>- <b>Pre + Post:</b> reconstruye si el árbol es estrictamente binario.</p>
+
+      <br>
+      <p><strong>IMPORTAR / EXPORTAR</strong></p>
+      <p>- <b>Exportar JSON:</b> guarda el árbol actual.</p>
+      <p>- <b>Importar Árbol:</b> carga un árbol desde un archivo JSON.</p>
+
+      <br>
+      <p><strong>OTROS</strong></p>
+      <p>- <b>Limpiar:</b> reinicia todo el árbol.</p>
+      <p>- <b>Click derecho sobre un nodo:</b> elimina ese nodo y su subárbol.</p>
+    </div>
+
+  </div>
+
+  <!-- Modal para mostrar recorridos -->
+  <div id="modalContainer" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <div class="arbol-container">
+        <div id="tree-modal"></div>
+        <div id="resultado-container-modal">
+          <p>In-Order: <span id="Inorden">--</span></p>
+          <p>Post-Order: <span id="Postorden">--</span></p>
         </div>
-    </div>    
-    <script src="tutoArBi.js"></script>    
+      </div>
+    </div>
+  </div>
+  <div id="overlay" class="hidden"></div>
+
 </body>
 
 </html>

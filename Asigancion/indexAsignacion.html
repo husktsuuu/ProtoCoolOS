@@ -15,13 +15,13 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <title>Asignacion</title>
 </head>
-    
+
 <body>
 
     <div class="main">
         <!-- Navbar -->
         <div class="navbar">
-            <a href="#" class="logo">ProtoCool OS</a>
+            <a href="#" class="logo">Ratatuil</a>
             <!--
             <div class="nav-links">
                 <span class="item selected">Home</span>
@@ -38,13 +38,13 @@
                     <button class="nav-btn">JOHNSON</button>
                 </a>
                 <a href="../Asigancion/indexAsignacion.html">
-                    <button class="nav-btn selected">ASIGNACIÓN</button>
+                    <button class="nav-btn">ASIGNACIÓN</button>
                 </a>
                 <a href="../NorthWest/indexNorth.html">
                     <button class="nav-btn">NORTH WEST</button>
                 </a>
                 <a href="../Sort/indexSort.html">
-                    <button class="nav-btn">SORT</button>
+                    <button class="nav-btn selected">SORT</button>
                 </a>
                 <a href="../ArbolBinario/indexArbol.html">
                     <button class="nav-btn">ARBOL BINARIO</button>
@@ -52,20 +52,11 @@
                 <a href="../Kruskal/indexKruskal.html">
                     <button class="nav-btn">KRUSKAL</button>
                 </a>
-                <a href="../Dijkstra/indexdijkstra.html">
-                    <button class="nav-btn">DIJKSTRA</button>
-                </a>
-                <a href="../Compet/indexCompet.html">
-                    <button class="nav-btn">COMPET</button>
-                </a>
-                <a href="../Contacto/indexContacto.html">
-                    <button class="nav-btn">CONTACTO</button>
-                </a>
             </div>
-    
-            <button class="toggler">
+
+            <!--<button class="toggler">
                 <i class='bx bx-menu'></i>
-            </button>
+            </button>-->
         </div>
         <!-- End of Navbar -->
 
@@ -75,7 +66,7 @@
         <div id="contenedor-general">
 
             <div id="grafo-container"></div>
-            
+
             <div id="matriz-container">
                 <table id="matriz-adyacencia">
                     <thead>
@@ -93,19 +84,20 @@
         </div>
 
         <div style="margin-top: 20px;">
-            <label for="cambiarColorBtn" style="color: white; margin-right: 5px;">Color de Nodo:</label>
+            <label for="cambiarColorBtn" style="color: black; margin-right: 5px;">Color de Nodo:</label>
             <input type="color" id="cambiarColorBtn" value="#d2e5ff">
             <!-- Botón Eliminar -->
             <button id="eliminarBtn" style="margin-left: 10px;">Eliminar</button>
             <button id="limpiarBtn" style="margin-left: 10px;">Limpiar</button>
-        </div>        
+        </div>
 
         <button id="guardarBtn">Exportar</button>
-        <div id="exportOptions" style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
+        <div id="exportOptions"
+            style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
             <button id="exportPNG">PNG</button>
             <button id="exportPDF">PDF</button>
             <button id="exportJSON">JSON (editable)</button>
-        </div>              
+        </div>
         <button id="cargarBtn">Importar</button>
         <button id="minimizarBtn">Minimizar</button>
         <button id="maximizarBtn">Maximizar</button>
@@ -117,19 +109,84 @@
         <!-- Botón help -->
 
         <button id="helpBtn">?</button>
+
+        <div id="overlay" class="hidden"></div>
+
         <div id="helpPopup" class="hidden">
-            <p>AYUDA</p>
-            <br>
-            <p>Dentro del contenedor de la izquierda:</p>
-            <p>- Para añadir un nodo: hacer click en la pantalla</p>
-            <p>- Para unir nodos: mantener click y llevar a otro nodo</p>
-            <p>- Para eliminar nodo: hacer click derecho en un nodo</p>
-            <p>- Para mover nodo: mantener presionado Ctrl y hacer click en el nodo</p>
-            <br>
-            <p>Fuera del contenedor:</p>
-            <p>- Presionar guardar para guardar</p>
-            <p>- Presionar limpiar para limpiar</p>
+            <h2>Ayuda Asignacion</h2>
+            <h3>1. Creación de nodos</h3>
+            <p>
+                • Haga clic en un espacio vacío dentro del grafo.<br>
+                • Asigne un nombre al nodo cuando el sistema lo solicite.
+            </p>
+
+            <h3>2. Creación de aristas</h3>
+            <p>
+                • Haga clic en un nodo origen y luego en un nodo destino.<br>
+                • Ingrese el valor numérico (costo) de la arista.<br>
+                • El sistema evita aristas duplicadas automáticamente.
+            </p>
+
+            <h3>3. Edición de nodos y aristas</h3>
+            <p>
+                • Clic derecho sobre un nodo para cambiar su nombre.<br>
+                • Clic derecho sobre una arista para modificar su valor.
+            </p>
+
+            <h3>4. Eliminación de elementos</h3>
+            <p>
+                • Active el modo Eliminar usando el botón correspondiente.<br>
+                • Haga clic sobre un nodo o una arista para eliminarla.<br>
+                • Desactive el modo Eliminar volviendo a presionar el botón.
+            </p>
+
+            <h3>5. Cambio de color de los nodos</h3>
+            <p>
+                • Utilice el selector de color para definir el color que se aplicará a nuevos nodos.
+            </p>
+
+            <h3>6. Matriz de costos</h3>
+            <p>
+                • La matriz se genera automáticamente a partir de las aristas creadas.<br>
+                • Las filas representan los nodos origen y las columnas los nodos destino.<br>
+                • La matriz se actualiza en tiempo real con cada modificación.
+            </p>
+
+            <h3>7. Algoritmo de Asignación (Método Húngaro)</h3>
+            <p>
+                • Minimizar: calcula la asignación con el menor costo posible.<br>
+                • Maximizar: calcula la asignación con el mayor beneficio posible.<br>
+                • El sistema resalta automáticamente la solución en la matriz y en el grafo.
+            </p>
+
+            <h3>8. Visualización de resultados</h3>
+            <p>
+                • Se muestra la asignación óptima, indicando qué nodo se asigna a cuál y con qué valor.<br>
+                • Se muestra la suma total de los valores asignados.<br>
+                • Las celdas involucradas se resaltan en la matriz.<br>
+                • Las aristas seleccionadas se destacan visualmente en el grafo.
+            </p>
+
+            <h3>9. Exportación de datos</h3>
+            <p>
+                • Exportar como PNG: genera una imagen del grafo.<br>
+                • Exportar como PDF: genera un documento con el grafo.<br>
+                • Exportar como JSON: guarda el grafo completo (nodos, aristas y estado) para edición futura.
+            </p>
+
+            <h3>10. Importación de datos</h3>
+            <p>
+                • Permite cargar un archivo JSON previamente guardado para restaurar el grafo y la matriz.
+            </p>
+
+            <h3>11. Limpieza del grafo</h3>
+            <p>
+                • Borra todos los nodos, aristas y datos generados.<br>
+                • Restablece por completo la matriz de costos y la sección de resultados.
+            </p>
+
         </div>
+
 
         <!-- End of Botón help -->
 

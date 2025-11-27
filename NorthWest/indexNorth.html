@@ -2,140 +2,159 @@
 <html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>North West</title>
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="stylesNorht.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
-    <script src="northBack.js"></script>
-    <script src="tutoNW.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <title>NorthWest</title>
+
 </head>
-    
+
+<script src="northBack.js"></script>
+<script src="tutoNW.js"></script>
+
 <body>
-
     <div class="main">
-        <!-- Navbar -->
+
+        <!-- NAVBAR -->
         <div class="navbar">
-            <a href="#" class="logo">ProtoCool OS</a>
-            <!--
-            <div class="nav-links">
-                <span class="item selected">Home</span>
-            </div>
-            -->
+            <a href="#" class="logo">Ratatuil</a>
             <div class="nav-buttons" id="navMenu">
-                <a href="../index.html">
-                    <button class="nav-btn">HOME</button>
-                </a>
-                <a href="../Grafos1/indexGrafos.html">
-                    <button class="nav-btn">GRAFOS</button>
-                </a>
-                <a href="../Johnson/indexJohnson.html">
-                    <button class="nav-btn">JOHNSON</button>
-                </a>
-                <a href="../Asigancion/indexAsignacion.html">
-                    <button class="nav-btn">ASIGNACIÓN</button>
-                </a>
-                <a href="../NorthWest/indexNorth.html">
-                    <button class="nav-btn selected">NORTH WEST</button>
-                </a>
-                <a href="../Sort/indexSort.html">
-                    <button class="nav-btn">SORT</button>
-                </a>
-                <a href="../ArbolBinario/indexArbol.html">
-                    <button class="nav-btn">ARBOL BINARIO</button>
-                </a>
-                <a href="../Kruskal/indexKruskal.html">
-                    <button class="nav-btn">KRUSKAL</button>
-                </a>
-                <a href="../Dijkstra/indexdijkstra.html">
-                    <button class="nav-btn">DIJKSTRA</button>
-                </a>
-                <a href="../Compet/indexCompet.html">
-                    <button class="nav-btn">COMPET</button>
-                </a>
-                <a href="../Contacto/indexContacto.html">
-                    <button class="nav-btn">CONTACTO</button>
-                </a>
+                <a href="../index.html"><button class="nav-btn">HOME</button></a>
+                <a href="../Grafos1/indexGrafos.html"><button class="nav-btn">GRAFOS</button></a>
+                <a href="../Johnson/indexJohnson.html"><button class="nav-btn">JOHNSON</button></a>
+                <a href="../Asigancion/indexAsignacion.html"><button class="nav-btn">ASIGNACIÓN</button></a>
+                <a href="../NorthWest/indexNorth.html"><button class="nav-btn selected">NORTH WEST</button></a>
+                <a href="../Sort/indexSort.html"><button class="nav-btn">SORT</button></a>
+                <a href="../ArbolBinario/indexArbol.html"><button class="nav-btn">ARBOL BINARIO</button></a>
+                <a href="../Kruskal/indexKruskal.html"><button class="nav-btn">KRUSKAL</button></a>
             </div>
-    
-            <button class="toggler">
-                <i class='bx bx-menu'></i>
-            </button>
         </div>
-        <!-- End of Navbar -->
+        <!-- END NAVBAR -->
 
-        <!-- Top Container -->
-
-        <div id="logo"></div>
+        <!-- CONTENIDO -->
         <div id="contenedor-general">
-
             <div id="grafo-container"></div>
-            
+
             <div id="matriz-container">
                 <table id="matriz-adyacencia">
                     <thead>
-                        <tr id="matriz-header">
-                            <!-- Cabeceras de la matriz se llenarán dinámicamente -->
-                        </tr>
+                        <tr id="matriz-header"></tr>
                     </thead>
-                    <tbody id="matriz-body">
-                        <!-- Cuerpo de la matriz se llenará dinámicamente -->
-                    </tbody>
+                    <tbody id="matriz-body"></tbody>
                 </table>
             </div>
-            <div id="flecha-punta"></div>
-
         </div>
 
-        <div style="margin-top: 20px;">
-            <label for="cambiarColorBtn" style="color: white; margin-right: 5px;">Color de Nodo:</label>
+        <!-- CONTROLES -->
+        <div class="controles-superiores">
+            <label for="cambiarColorBtn">Color de Nodo:</label>
             <input type="color" id="cambiarColorBtn" value="#d2e5ff">
-            <!-- Botón Eliminar -->
-            <button id="eliminarBtn" style="margin-left: 10px;">Eliminar</button>
-            <button id="limpiarBtn" style="margin-left: 10px;">Limpiar</button>
-        </div>        
 
-        <button id="guardarBtn">Exportar</button>
-        <div id="exportOptions" style="display:none; position: absolute; background-color: #252954; padding: 10px; border-radius: 5px; margin-top: 5px;">
-            <button id="exportPNG">PNG</button>
-            <button id="exportPDF">PDF</button>
-            <button id="exportJSON">JSON (editable)</button>
-        </div>              
-        <button id="cargarBtn">Importar</button>
-        <button id="minimizarBtn">Minimizar</button>
-        <button id="maximizarBtn">Maximizar</button>
-        <div id="resultado-container"></div>
-        <input type="file" id="importarArchivo" style="display: none;" accept=".json">
+            <button id="eliminarBtn">Eliminar</button>
+            <button id="minimizarBtn">Minimizar</button>
+            <button id="maximizarBtn">Maximizar</button>
+            <button id="limpiarBtn">Limpiar</button>
 
-        <!-- End of Top Container -->
+            <button id="guardarBtn">Exportar</button>
+            <button id="cargarBtn">Importar</button>
 
-        <!-- Botón help -->
+            <div id="exportOptions"
+                style="display:none; background-color:#252954; padding:10px; border-radius:5px; margin-top:5px;">
+                <button id="exportPNG">PNG</button>
+                <button id="exportPDF">PDF</button>
+                <button id="exportJSON">JSON (editable)</button>
+            </div>
 
-        <button id="helpBtn">?</button>
-        <div id="helpPopup" class="hidden">
-            <p>AYUDA</p>
-            <br>
-            <p>Dentro del contenedor de la izquierda:</p>
-            <p>- Para añadir un nodo: hacer click en la pantalla</p>
-            <p>- Para unir nodos: mantener click y llevar a otro nodo</p>
-            <p>- Para eliminar nodo: hacer click derecho en un nodo</p>
-            <p>- Para mover nodo: mantener presionado Ctrl y hacer click en el nodo</p>
-            <br>
-            <p>Fuera del contenedor:</p>
-            <p>- Presionar guardar para guardar</p>
-            <p>- Presionar limpiar para limpiar</p>
+            <input type="file" id="importarArchivo" style="display:none" accept=".json">
         </div>
 
-        <!-- End of Botón help -->
+        <div id="resultado-container"></div>
+
+        <!-- HELP -->
+        <button id="helpBtn">?</button>
+
+        <div id="overlay" class="hidden"></div>
+
+        <div id="helpPopup" class="hidden">
+            <h2>Guía de Uso - Método de Esquina Noroeste</h2>
+
+            <div id="helpContent">
+
+                <h3>1. Creación de nodos</h3>
+                <p>
+                    • Haga clic en el área del grafo para crear un nodo.<br>
+                    • El sistema solicitará un nombre (por defecto Nodo 1, Nodo 2, etc.).
+                </p>
+
+                <h3>2. Creación de aristas</h3>
+                <p>
+                    • Seleccione un nodo origen y luego un nodo destino.<br>
+                    • Ingrese el costo o peso correspondiente.
+                </p>
+
+                <h3>3. Edición de elementos</h3>
+                <p>
+                    • Clic derecho en un nodo o arista para cambiar su nombre o valor.
+                </p>
+
+                <h3>4. Colores</h3>
+                <p>
+                    • El selector de color permite definir el color de los nuevos nodos.
+                </p>
+
+                <h3>5. Eliminación</h3>
+                <p>
+                    • Active el modo eliminar y haga clic sobre un nodo o una arista.<br>
+                    • Vuelva a presionar “Eliminar” para salir del modo.
+                </p>
+
+                <h3>6. Matriz de costos</h3>
+                <p>
+                    • La matriz se actualiza automáticamente con las aristas creadas.<br>
+                    • Representa las rutas, las ofertas y las demandas.<br>
+                    • Puede editar manualmente las casillas de costo, oferta y demanda.
+                </p>
+
+                <h3>7. Método Esquina Noroeste</h3>
+                <p>
+                    • Minimizar: aplica el método NW clásico para obtener el costo mínimo.<br>
+                    • Maximizar: aplica la variación para obtener el beneficio máximo.
+                </p>
+
+                <h3>8. Balanceo automático</h3>
+                <p>
+                    • Si la oferta y demanda no coinciden, se agrega automáticamente una fila o columna ficticia.
+                </p>
+
+                <h3>9. Exportación</h3>
+                <p>
+                    • Exportar PNG: genera imagen del grafo.<br>
+                    • Exportar PDF: genera esquema del grafo.<br>
+                    • Exportar JSON: guarda nodos, aristas y estado editable.
+                </p>
+
+                <h3>10. Importación</h3>
+                <p>
+                    • Puede cargar un archivo JSON para restaurar un grafo previo.
+                </p>
+
+                <h3>11. Limpieza</h3>
+                <p>
+                    • Elimina todos los nodos, aristas, matriz y resultados.<br>
+                    • Restablece todo el módulo a su estado inicial.
+                </p>
+
+            </div>
+        </div>
+
 
     </div>
-
 </body>
 
 </html>

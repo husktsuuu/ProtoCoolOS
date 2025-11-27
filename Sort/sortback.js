@@ -1,535 +1,554 @@
-document.addEventListener('DOMContentLoaded', function() {
-    //DECLARACIONES
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.style.display = 'none';
-    document.body.appendChild(fileInput);
-    const agregarListaBtn = document.getElementById('agregarListaBtn');
-    const listaRandomBtn = document.getElementById('listaRandomBtn');
-    const limpiarBtn = document.getElementById('limpiarBtn');
-    let miGrafico;
-    let listaNumeros = [];
-    
-    //MANEJO DE BOTONES
-    const botonesSort = [
-        { boton: document.getElementById('selectionBtn'), opciones: document.getElementById('selectionOptions') },
-        { boton: document.getElementById('insertionBtn'), opciones: document.getElementById('insertionOptions') },
-        { boton: document.getElementById('shellBtn'), opciones: document.getElementById('shellOptions') },
-        { boton: document.getElementById('mergeBtn'), opciones: document.getElementById('mergeOptions') }
-    ];
+// sortback.js (versión completa con logs)
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        console.log('✅ sortback.js cargado y DOM listo');
 
-    function manejarVisibilidadOpciones(botonClickeado) {
-        botonesSort.forEach(({ boton, opciones }) => {
-            if (boton === botonClickeado) {
-                const rect = boton.getBoundingClientRect();
-                opciones.style.display = opciones.style.display === 'block' ? 'none' : 'block';
-                opciones.style.top = `${rect.bottom + window.scrollY}px`; // Ajusta la posición vertical
-                opciones.style.left = `${rect.left + window.scrollX}px`; // Ajusta la posición horizontal
-            } else {
-                opciones.style.display = 'none';
-            }
-        });
-    }
+        // -------------------------------
+        // REFERENCIAS DEL DOM
+        // -------------------------------
+        const agregarListaBtn = document.getElementById('agregarListaBtn');
+        const listaRandomBtn = document.getElementById('listaRandomBtn');
+        const limpiarBtn = document.getElementById('limpiarBtn');
+        const guardarBtn = document.getElementById('guardarBtn'); // (En tu UI dice “Importar”)
+        const cargarBtn = document.getElementById('cargarBtn');  // (En tu UI dice “Guardar”)
 
-    botonesSort.forEach(({ boton }) => {
-        boton.addEventListener('click', (event) => {
-            if (listaNumeros.length > 0){
-                event.stopPropagation(); // Previene que el evento se propague
-                manejarVisibilidadOpciones(boton);
-            }else{
-                alert('No se ha ingresado/generado ninguna lista de números.');
-            }
-        });
-    });
+        // Menús de opciones
+        const selectionBtn = document.getElementById('selectionBtn');
+        const insertionBtn = document.getElementById('insertionBtn');
+        const shellBtn = document.getElementById('shellBtn');
+        const mergeBtn = document.getElementById('mergeBtn');
 
-    // Cerrar los paneles de opciones al hacer clic fuera de ellos
-    document.addEventListener('click', () => {
-        botonesSort.forEach(({ opciones }) => {
-            opciones.style.display = 'none';
-        });
-    });
+        const selectionOptions = document.getElementById('selectionOptions');
+        const insertionOptions = document.getElementById('insertionOptions');
+        const shellOptions = document.getElementById('shellOptions');
+        const mergeOptions = document.getElementById('mergeOptions');
 
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
+        // Botones internos (opciones)
+        const SordenarBtn = document.getElementById('SordenarBtn');
+        const SordenarDesBtn = document.getElementById('SordenarDesBtn');
+        const IordenarBtn = document.getElementById('IordenarBtn');
+        const IordenarDesBtn = document.getElementById('IordenarDesBtn');
+        const SHordenarBtn = document.getElementById('SHordenarBtn');
+        const SHordenarDesBtn = document.getElementById('SHordenarDesBtn');
+        const MordenarBtn = document.getElementById('MordenarBtn');
+        const MordenarDesBtn = document.getElementById('MordenarDesBtn');
 
-    //SELECTION SORT
-    async function visualizarSelectionSort(listaNumeros) {
-        let arr = [].concat(listaNumeros);
-        let startTime = performance.now(); // Captura el tiempo de inicio
-    
-        for (let i = 0; i < arr.length - 1; i++) {
-            let min = i;
-            for (let j = i + 1; j < arr.length; j++) {
-                if (arr[j] < arr[min]) {
-                    min = j;
-                }
-                dibujarGraficoBarras(arr, [min, j]);
-                await sleep(100); // Pausa para visualización
-            }
-            if (min !== i) {
-                [arr[i], arr[min]] = [arr[min], arr[i]];
-                dibujarGraficoBarras(arr, [i, min]);
-                await sleep(100); // Pausa para visualización
-            }
+        // Resultados y canvas
+        const sortText = document.getElementById('sortText');
+        const tiempoOrdenEl = document.getElementById('tiempoOrdenamiento');
+        const listaOriginalEl = document.getElementById('listaOriginal');
+        const listaOrdenadaEl = document.getElementById('listaOrdenada');
+        const resultadoContainer = document.getElementById('resultado-container');
+        const ctx = document.getElementById('graficoBarras')?.getContext('2d');
+
+        if (!ctx) {
+            console.error('❌ No se encontró el canvas #graficoBarras');
+            return;
         }
-    
-        let endTime = performance.now(); // Captura el tiempo de finalización
-        let tiempoOrdenamiento = (endTime - startTime) / 1000; // Calcula la diferencia y convierte a segundos
-        document.getElementById('tiempoOrdenamiento').textContent = tiempoOrdenamiento.toFixed(2); // Muestra el tiempo en el elemento del DOM
-        document.getElementById('listaOrdenada').textContent = arr.join(", ");
-        console.log(listaNumeros);
-    }
 
-    async function visualizarSelectionSortDes(listaNumeros) {
-        let arr = [].concat(listaNumeros);
-        let startTime = performance.now(); // Captura el tiempo de inicio
-    
-        for (let i = 0; i < arr.length - 1; i++) {
-            let max = i;
-            for (let j = i + 1; j < arr.length; j++) {
-                if (arr[j] > arr[max]) {
-                    max = j;
-                }
-                dibujarGraficoBarras(arr, [max, j]);
-                await sleep(100); // Pausa para visualización
-            }
-            if (max !== i) {
-                [arr[i], arr[max]] = [arr[max], arr[i]];
-                dibujarGraficoBarras(arr, [i, max]);
-                await sleep(100); // Pausa para visualización
-            }
-        }
-    
-        let endTime = performance.now(); // Captura el tiempo de finalización
-        let tiempoOrdenamiento = (endTime - startTime) / 1000; // Calcula la diferencia y convierte a segundos
-        document.getElementById('tiempoOrdenamiento').textContent = tiempoOrdenamiento.toFixed(2); // Muestra el tiempo en el elemento del DOM
-        document.getElementById('listaOrdenada').textContent = arr.join(", ");
-    }
+        // -------------------------------
+        // ESTADO
+        // -------------------------------
+        let miGrafico = null;
+        let listaNumeros = [];
+        let listaOriginalStr = '--';
 
-    //INSERTION SORT
-    async function visualizarInsertionSort(listaNumeros) {
-        let arr = [].concat(listaNumeros);
-        let startTime = performance.now(); // Captura el tiempo de inicio
-    
-        for (let i = 1; i < arr.length; i++) {
-            let key = arr[i];
-            let j = i - 1;
-    
-            /* Mueve los elementos de arr[0..i-1], que son mayores que key,
-               a una posición adelante de su posición actual */
-            while (j >= 0 && arr[j] > key) {
-                arr[j + 1] = arr[j];
-                j = j - 1;
-                dibujarGraficoBarras(arr, [j + 1, i]); // Visualizar el cambio
-                await sleep(100); // Pausa para visualización
-            }
-            arr[j + 1] = key;
-            dibujarGraficoBarras(arr); // Visualizar el cambio
-            await sleep(100); // Pausa para visualización
-        }
-    
-        let endTime = performance.now(); // Captura el tiempo de finalización
-        let tiempoOrdenamiento = (endTime - startTime) / 1000; // Calcula la diferencia y convierte a segundos
-        document.getElementById('tiempoOrdenamiento').textContent = tiempoOrdenamiento.toFixed(2); // Muestra el tiempo en el elemento del DOM
-        document.getElementById('listaOrdenada').textContent = arr.join(", ");
-    }
+        // -------------------------------
+        // UTILIDADES
+        // -------------------------------
+        const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-    async function visualizarInsertionSortDesc(listaNumeros) {
-        let arr = [].concat(listaNumeros);
-        let startTime = performance.now(); // Captura el tiempo de inicio
-        
-        for (let i = 1; i < arr.length; i++) {
-            let key = arr[i];
-            let j = i - 1;
-    
-            // Mueve los elementos de arr[0..i-1] que son menores que
-            // key a una posición adelante de su posición actual
-            while (j >= 0 && arr[j] < key) {
-                arr[j + 1] = arr[j];
-                dibujarGraficoBarras(arr, [j + 1, j]); // Visualización de la posición que está siendo comparada
-                await sleep(100); // Pausa para visualización
-                j = j - 1;
-            }
-            arr[j + 1] = key;
-            dibujarGraficoBarras(arr, [j + 1]); // Visualización de la inserción
-            await sleep(100); // Pausa para visualización
+        function resetResultados() {
+            sortText.textContent = '--';
+            tiempoOrdenEl.textContent = '--';
+            listaOrdenadaEl.textContent = '--';
         }
-        
-        let endTime = performance.now(); // Captura el tiempo de finalización
-        let tiempoOrdenamiento = (endTime - startTime) / 1000; // Calcula la diferencia y convierte a segundos
-        document.getElementById('tiempoOrdenamiento').textContent = tiempoOrdenamiento.toFixed(2); // Muestra el tiempo en el elemento del DOM
-        document.getElementById('listaOrdenada').textContent = arr.join(", ");
-    }
 
-    //SHELL SORT
-    async function visualizarShellSort(listaNumeros) {
-        let n = listaNumeros.length;
-        let gap = prompt('Introduce el valor inicial del gap:');
-        gap = parseInt(gap, 10);
-        
-        let arr = [].concat(listaNumeros);
-        let startTime = performance.now(); // Captura el tiempo de inicio
-        
-        for (gap; gap > 0; gap = Math.floor(gap / 2)) {
-            for (let i = gap; i < n; i += 1) {
-                let temp = arr[i];
-                let j;
-                for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                    arr[j] = arr[j - gap];
-                    dibujarGraficoBarras(arr, [j, j - gap]); // Visualizar el cambio
-                    await sleep(100); // Pausa para visualización
-                }
-                arr[j] = temp;
-                dibujarGraficoBarras(arr); // Visualizar el cambio
-                await sleep(100); // Pausa para visualización
-            }
+        function actualizarResultado(finalArr, tSeg) {
+            tiempoOrdenEl.textContent = tSeg.toFixed(2);
+            listaOrdenadaEl.textContent = finalArr.join(', ');
+            resultadoContainer.style.display = 'block';
         }
-        
-        let endTime = performance.now(); // Captura el tiempo de finalización
-        let tiempoOrdenamiento = (endTime - startTime) / 1000; // Calcula la diferencia y convierte a segundos
-        document.getElementById('tiempoOrdenamiento').textContent = tiempoOrdenamiento.toFixed(2); // Muestra el tiempo en el elemento del DOM
-        document.getElementById('listaOrdenada').textContent = arr.join(", ");
-    }
-    
-    async function visualizarShellSortDesc(listaNumeros) {
-        let n = listaNumeros.length;
-        let gap = prompt('Introduce el valor inicial del gap:');
-        gap = parseInt(gap, 10);
-        
-        let arr = [].concat(listaNumeros);
-        let startTime = performance.now(); // Captura el tiempo de inicio
-        
-        for (gap; gap > 0; gap = Math.floor(gap / 2)) {
-            for (let i = gap; i < n; i += 1) {
-                let temp = arr[i];
-                let j;
-                for (j = i; j >= gap && arr[j - gap] < temp; j -= gap) {
-                    arr[j] = arr[j - gap];
-                    dibujarGraficoBarras(arr, [j, j - gap]); // Visualizar el cambio
-                    await sleep(100); // Pausa para visualización
-                }
-                arr[j] = temp;
-                dibujarGraficoBarras(arr); // Visualizar el cambio
-                await sleep(100); // Pausa para visualización
-            }
-        }
-        
-        let endTime = performance.now(); // Captura el tiempo de finalización
-        let tiempoOrdenamiento = (endTime - startTime) / 1000; // Calcula la diferencia y convierte a segundos
-        document.getElementById('tiempoOrdenamiento').textContent = tiempoOrdenamiento.toFixed(2); // Muestra el tiempo en el elemento del DOM
-        document.getElementById('listaOrdenada').textContent = arr.join(", ");
-    }
 
-    //MERGE SORT
-    async function merge(arr, l, m, r, ascendente = true) {
-        const n1 = m - l + 1;
-        const n2 = r - m;
-        let L = new Array(n1);
-        let R = new Array(n2);
-    
-        for (let i = 0; i < n1; i++)
-            L[i] = arr[l + i];
-        for (let j = 0; j < n2; j++)
-            R[j] = arr[m + 1 + j];
-    
-        let i = 0, j = 0, k = l;
-        while (i < n1 && j < n2) {
-            if (ascendente ? L[i] <= R[j] : L[i] >= R[j]) {
-                arr[k] = L[i];
-                i++;
-            } else {
-                arr[k] = R[j];
-                j++;
+        function dibujarBurbujas(datos, highlightIdx = []) {
+            console.log('🎨 Dibujando burbujas con datos:', datos);
+
+            if (miGrafico) {
+                miGrafico.destroy();
+                miGrafico = null;
             }
-            await dibujarGraficoBarras(arr, [k]);
-            await sleep(50);
-            k++;
-        }
-    
-        while (i < n1) {
-            arr[k] = L[i];
-            await dibujarGraficoBarras(arr, [k]);
-            await sleep(50);
-            i++;
-            k++;
-        }
-    
-        while (j < n2) {
-            arr[k] = R[j];
-            await dibujarGraficoBarras(arr, [k]);
-            await sleep(50);
-            j++;
-            k++;
-        }
-    }
-    
-    async function mergeSort(arr, l, r, ascendente = true) {
-        if (l >= r) {
-            return; //returns recursively
-        }
-        const m = l + parseInt((r - l) / 2);
-        await mergeSort(arr, l, m, ascendente);
-        await mergeSort(arr, m + 1, r, ascendente);
-        await merge(arr, l, m, r, ascendente);
-    }
-    
-    async function visualizarMergeSort(listaNumeros, ascendente = true) {
-        let arr = [].concat(listaNumeros);
-        let startTime = performance.now();
-        await mergeSort(arr, 0, arr.length - 1, ascendente);
-        let endTime = performance.now();
-        let tiempoOrdenamiento = (endTime - startTime) / 1000;
-        document.getElementById('tiempoOrdenamiento').textContent = tiempoOrdenamiento.toFixed(2);
-        document.getElementById('listaOrdenada').textContent = arr.join(", ");
-    }    
 
-    //ACTUALIZAR CONTAINER RESULTADO Y GRÁFICO
-    function actualizarResultado() {
-        let listaOrdenadaHTML = listaNumeros.join(", ");
-        let tiempoFinal = (performance.now() - tiempoInicio) / 1000;
-        resultadoContainer.innerHTML = `
-            <p>Tiempo de Ordenamiento: ${tiempoFinal.toFixed(2)} Segundos</p>
-            <p>Lista Original: ${listaOriginalHTML}</p>
-            <p>Lista Ordenada: ${listaOrdenadaHTML}</p>
-        `;
-        resultadoContainer.style.display = 'block'; // Muestra el contenedor con los resultados
-    }
+            // Nada que dibujar
+            if (!datos || datos.length === 0) {
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                return;
+            }
 
-    function dibujarGraficoBarras(datos, highlightIndexes = []) {
-        const ctx = document.getElementById('graficoBarras').getContext('2d');
-        if (miGrafico) {
-            miGrafico.destroy();
-        }
-        
-        miGrafico = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: datos.map((_, i) => `${i + 1}`),
-                datasets: [{
-                    label: '', // Se deja el label vacío o se quita completamente esta línea
-                    data: datos,
-                    backgroundColor: datos.map((_, i) => highlightIndexes.includes(i) ?  '#6bcff4' : '#581790'), //#7e22ce
-                    borderColor: 'rgba(255, 255, 255, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        grid: {
-                            display: false, // Oculta la cuadrícula del eje X
+            // Escala de radios: que se note la diferencia
+            const maxValor = Math.max(...datos);
+            const minValor = Math.min(...datos);
+            const minR = 8;
+            const maxR = 70; // más grande para que se vea bien
+
+            const escalarR = (valor) => {
+                if (maxValor === minValor) return (minR + maxR) / 2;
+                const p = (valor - minValor) / (maxValor - minValor);
+                // curva suavemente creciente
+                return Math.pow(p, 1.2) * (maxR - minR) + minR;
+            };
+
+            // Preparamos puntos (alineados sobre y=0)
+            const puntos = datos.map((valor, i) => {
+                const r = escalarR(valor);
+                const res = {
+                    x: i + 1,
+                    y: 0,
+                    value: valor,    // para tooltip
+                    radius: r        // para el callback de radio
+                };
+                return res;
+            });
+
+            // Colores (uno por punto)
+            const bg = puntos.map((_, i) =>
+                highlightIdx.includes(i) ? 'rgba(107,207,244,0.95)' : 'rgba(59,130,246,0.85)'
+            );
+            const bd = puntos.map((_, i) =>
+                highlightIdx.includes(i) ? 'rgba(255,255,255,1)' : 'rgba(30,58,138,1)'
+            );
+
+            // Log de verificación de radios
+            console.log('🔎 Radios calculados:', puntos.map(p => p.radius));
+
+            miGrafico = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Valores',
+                        data: puntos,
+                        showLine: false,
+                        pointBackgroundColor: bg,
+                        pointBorderColor: bd,
+                        // Forzamos el radio por punto (clave para que se vea)
+                        pointRadius: puntos.map(p => p.radius),
+                        pointHoverRadius: puntos.map(p => p.radius + 3),
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    parsing: { xAxisKey: 'x', yAxisKey: 'y' },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            min: 0,
+                            max: datos.length + 1,
+                            ticks: { stepSize: 1, color: 'white' },
+                            grid: { display: false }
                         },
-                        ticks: {
-                            color: 'white' // Color de los ticks (marcas) del eje X
-                        },
-                        axis: 'x',
-                        borderColor: 'white' // Asegura que el borde del eje X sea visible
+                        y: {
+                            min: -1,
+                            max: 1,
+                            ticks: { display: false },
+                            grid: { display: false }
+                        }
                     },
-                    y: {
-                        grid: {
-                            display: false, // Oculta la cuadrícula del eje Y
-                        },
-                        ticks: {
-                            color: 'white' // Color de los ticks (marcas) del eje Y
-                        },
-                        axis: 'y',
-                        borderColor: 'white' // Asegura que el borde del eje Y sea visible
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false // Asegura que la leyenda esté desactivada
-                    }
-                },
-                animation: {
-                    duration: 0
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `Valor: ${context.raw.value}`
+                            }
+                        }
+                    },
+                    animation: { duration: 250, easing: 'easeInOutCubic' }
                 }
+            });
+        }
+
+
+
+        // -------------------------------
+        // TOGGLE DE MENÚS DE OPCIONES
+        // -------------------------------
+        const grupos = [
+            { btn: selectionBtn, panel: selectionOptions },
+            { btn: insertionBtn, panel: insertionOptions },
+            { btn: shellBtn, panel: shellOptions },
+            { btn: mergeBtn, panel: mergeOptions },
+        ];
+
+        function mostrarSolo(panel) {
+            [selectionOptions, insertionOptions, shellOptions, mergeOptions].forEach(p => {
+                if (!p) return;
+                p.style.display = (p === panel && p.style.display !== 'block') ? 'block' : 'none';
+            });
+        }
+
+        grupos.forEach(({ btn, panel }) => {
+            if (!btn || !panel) return;
+            btn.addEventListener('click', (ev) => {
+                try {
+                    console.log(`🟦 Click en botón de menú: #${btn.id}`);
+                    if (listaNumeros.length === 0) {
+                        alert('No se ha ingresado/generado ninguna lista.');
+                        return;
+                    }
+                    ev.stopPropagation();
+                    // Posicionar el panel bajo el botón
+                    const rect = btn.getBoundingClientRect();
+                    panel.style.position = 'absolute';
+                    panel.style.top = `${rect.bottom + window.scrollY}px`;
+                    panel.style.left = `${rect.left + window.scrollX}px`;
+                    mostrarSolo(panel);
+                } catch (e) {
+                    console.error('❌ Error en click de menú:', e);
+                }
+            });
+        });
+
+        document.addEventListener('click', () => {
+            mostrarSolo(null);
+        });
+
+        // -------------------------------
+        // ENTRADA DE LISTAS
+        // -------------------------------
+        agregarListaBtn?.addEventListener('click', () => {
+            try {
+                console.log('🟩 Click en Agregar Lista');
+                const cantStr = prompt('¿Cuántos números deseas agregar a la lista?');
+                const n = parseInt(cantStr, 10);
+                if (!Number.isFinite(n) || n <= 0) return alert('Cantidad inválida.');
+
+                const tmp = [];
+                for (let i = 0; i < n; i++) {
+                    const vStr = prompt(`Ingresa el número ${i + 1}:`);
+                    const v = parseFloat(vStr);
+                    if (!Number.isFinite(v)) return alert(`Valor inválido: ${vStr}`);
+                    tmp.push(v);
+                }
+                listaNumeros = tmp;
+                listaOriginalStr = listaNumeros.join(', ');
+                listaOriginalEl.textContent = listaOriginalStr;
+                resetResultados();
+                dibujarBurbujas(listaNumeros);
+            } catch (e) {
+                console.error('❌ Error en Agregar Lista:', e);
             }
         });
-    }
 
-    //EVENT LISTENERS BOTONES
-    agregarListaBtn.addEventListener('click', function() {
-        let cantidad = prompt('¿Cuántos números deseas agregar a la lista?');
-        cantidad = parseInt(cantidad, 10);
+        listaRandomBtn?.addEventListener('click', () => {
+            try {
+                console.log('🟩 Click en Generar Random');
+                const cStr = prompt('¿Cuántos números aleatorios?');
+                const c = parseInt(cStr, 10);
+                if (!Number.isFinite(c) || c <= 0) return alert('Cantidad inválida.');
 
-        if (!isNaN(cantidad) && cantidad > 0) {
-            listaNumeros = [];
-            for (let i = 0; i < cantidad; i++) {
-                let numero = prompt(`Ingresa el número ${i + 1}:`);
-                numero = parseInt(numero, 10);
-
-                if (!isNaN(numero)) {
-                    listaNumeros.push(numero);
-                } else {
-                    alert(`El valor ingresado '${numero}' no es un número. Se interrumpe la adición de números.`);
-                    return;
+                const min = parseFloat(prompt('Valor mínimo:'));
+                const max = parseFloat(prompt('Valor máximo:'));
+                if (!Number.isFinite(min) || !Number.isFinite(max) || min >= max) {
+                    return alert('Rango inválido.');
                 }
+
+                listaNumeros = Array.from({ length: c }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+                console.log('🎲 Lista aleatoria:', listaNumeros);
+                listaOriginalStr = listaNumeros.join(', ');
+                listaOriginalEl.textContent = listaOriginalStr;
+                resetResultados();
+                dibujarBurbujas(listaNumeros);
+            } catch (e) {
+                console.error('❌ Error al generar random:', e);
             }
-            document.getElementById('listaOriginal').textContent = listaNumeros.join(", ");
-            dibujarGraficoBarras(listaNumeros);
-        } else {
-            alert('La cantidad debe ser un número mayor a cero.');
-        }
-        document.getElementById('sortText').textContent = "--";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-    });
+        });
 
-    listaRandomBtn.addEventListener('click', function() {
-        const cantidad = prompt('¿Cuántos números aleatorios deseas generar?');
-        const cantidadNumeros = parseInt(cantidad);
-
-        if (!isNaN(cantidadNumeros) && cantidadNumeros > 0) {
-            const rangoMin = prompt('Introduce el valor mínimo del rango:');
-            const rangoMax = prompt('Introduce el valor máximo del rango:');
-            const min = parseInt(rangoMin);
-            const max = parseInt(rangoMax);
-
-            if (!isNaN(min) && !isNaN(max) && min < max) {
-                listaNumeros = []; // Reiniciamos la lista de números
-                for (let i = 0; i < cantidadNumeros; i++) {
-                    // Generamos números aleatorios dentro del rango especificado
-                    const numeroAleatorio = Math.floor(Math.random() * (max - min + 1)) + min;
-                    listaNumeros.push(numeroAleatorio);
-                }
-                document.getElementById('listaOriginal').textContent = listaNumeros.join(", ");
-                dibujarGraficoBarras(listaNumeros); // Dibujamos el gráfico con los números aleatorios
-            } else {
-                alert('Por favor, introduce un rango mínimo y máximo válido.');
+        limpiarBtn?.addEventListener('click', () => {
+            try {
+                console.log('🧹 Click en Limpiar');
+                if (miGrafico) { miGrafico.destroy(); miGrafico = null; }
+                listaNumeros = [];
+                listaOriginalStr = '--';
+                listaOriginalEl.textContent = '--';
+                resetResultados();
+                dibujarBurbujas([]); // vacío
+            } catch (e) {
+                console.error('❌ Error en Limpiar:', e);
             }
-        } else {
-            alert('Por favor, ingresa un número válido de elementos a generar.');
-        }
-        document.getElementById('sortText').textContent = "--";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-    });
+        });
 
-    //LISTENERS SELECTION SORT
-    SordenarBtn.addEventListener('click', async function() {
-        document.getElementById('sortText').textContent = "SELECTION";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        await visualizarSelectionSort(listaNumeros);
-        actualizarResultado();
-    });
-
-    SordenarDesBtn.addEventListener('click', async function() {
-        document.getElementById('sortText').textContent = "SELECTION";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        await visualizarSelectionSortDes(listaNumeros);
-        actualizarResultado();
-    });
-
-    //LISTENERS INSERTION SORT
-    IordenarBtn.addEventListener('click', async function() {
-        document.getElementById('sortText').textContent = "INSERTION";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        await visualizarInsertionSort(listaNumeros);
-        actualizarResultado();
-    });
-
-    IordenarDesBtn.addEventListener('click', async function() {
-        document.getElementById('sortText').textContent = "INSERTION";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        await visualizarInsertionSortDesc(listaNumeros);
-        actualizarResultado();
-    });
-
-    //LISTENERS SHELL SORT
-    SHordenarBtn.addEventListener('click', async function() {
-        document.getElementById('sortText').textContent = "SHELL";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        await visualizarShellSort(listaNumeros);
-        actualizarResultado();
-    });
-
-    SHordenarDesBtn.addEventListener('click', async function() {
-        document.getElementById('sortText').textContent = "SHELL";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        await visualizarShellSortDesc(listaNumeros);
-        actualizarResultado();
-    });
-
-    //LISTENERS MERGE SORT
-    MordenarBtn.addEventListener('click', async function() {
-        document.getElementById('sortText').textContent = "MERGE";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        await visualizarMergeSort(listaNumeros, true);
-        actualizarResultado();
-    });
-
-    MordenarDesBtn.addEventListener('click', async function() {
-        document.getElementById('sortText').textContent = "MERGE";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        await visualizarMergeSort(listaNumeros, false);
-        actualizarResultado();
-    });
-
-    //LIMPIAR IMPORTAR Y EXPORTAR
-    limpiarBtn.addEventListener('click', function() {
-        if (miGrafico) {
-            miGrafico.destroy();
-            miGrafico = null;
-        }
-        listaNumeros = [];
-        document.getElementById('sortText').textContent = "--";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOriginal').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        dibujarGraficoBarras(listaNumeros);
-    });
-
-    guardarBtn.addEventListener('click', function() {
-        if (listaNumeros.length > 0) {
-            const nombreArchivo = prompt("Ingrese el nombre del archivo para guardar:", "miListaNumeros");
-            if (nombreArchivo) {
-                const blob = new Blob([JSON.stringify(listaNumeros)], {type: "application/json"});
+        // Guardar / Cargar (OJO: tu UI tiene los textos invertidos a los IDs)
+        guardarBtn?.addEventListener('click', () => {
+            try {
+                console.log('💾 Click en Guardar (ID: guardarBtn)');
+                if (listaNumeros.length === 0) return alert('No hay números para guardar.');
+                const nombre = prompt('Nombre del archivo:', 'miListaNumeros');
+                if (!nombre) return;
+                const blob = new Blob([JSON.stringify(listaNumeros)], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url;
-                a.download = `${nombreArchivo}.json`;
+                a.href = url; a.download = `${nombre}.json`;
                 a.click();
                 URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('❌ Error al guardar:', e);
             }
-        } else {
-            alert('No hay números para guardar.');
-        }
-    });
+        });
 
-    cargarBtn.addEventListener('click', function() {
-        document.getElementById('sortText').textContent = "--";
-        document.getElementById('tiempoOrdenamiento').textContent = "--";
-        document.getElementById('listaOriginal').textContent = "--";
-        document.getElementById('listaOrdenada').textContent = "--";
-        fileInput.click();
-        fileInput.onchange = function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    try {
-                        listaNumeros = JSON.parse(event.target.result);
-                        document.getElementById('listaOriginal').textContent = listaNumeros.join(", ");
-                        dibujarGraficoBarras(listaNumeros);
-                        alert('Lista cargada correctamente.');
-                    } catch (e) {
-                        alert('El archivo no es válido.');
-                    }
+        cargarBtn?.addEventListener('click', () => {
+            try {
+                console.log('📂 Click en Cargar (ID: cargarBtn)');
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'application/json';
+                input.onchange = () => {
+                    const f = input.files?.[0];
+                    if (!f) return;
+                    const rd = new FileReader();
+                    rd.onload = (ev) => {
+                        try {
+                            const arr = JSON.parse(ev.target.result);
+                            if (!Array.isArray(arr)) throw new Error('JSON no es una lista');
+                            listaNumeros = arr.map(Number);
+                            console.log('📥 Lista cargada:', listaNumeros);
+                            listaOriginalStr = listaNumeros.join(', ');
+                            listaOriginalEl.textContent = listaOriginalStr;
+                            resetResultados();
+                            dibujarBurbujas(listaNumeros);
+                        } catch (e) {
+                            console.error('❌ Archivo inválido:', e);
+                            alert('Archivo inválido.');
+                        }
+                    };
+                    rd.readAsText(f);
                 };
-                reader.readAsText(file);
+                input.click();
+            } catch (e) {
+                console.error('❌ Error al cargar:', e);
             }
-        };
-    });
+        });
 
-    dibujarGraficoBarras(listaNumeros);
+        // -------------------------------
+        // ALGORITMOS (ANIMADOS)
+        // -------------------------------
+        async function selectionSortAnim(arr, asc = true) {
+            console.log(`▶ Selection Sort ${asc ? 'ASC' : 'DESC'}`);
+            const a = arr.slice();
+            const start = performance.now();
+
+            for (let i = 0; i < a.length - 1; i++) {
+                let best = i;
+                for (let j = i + 1; j < a.length; j++) {
+                    const cond = asc ? (a[j] < a[best]) : (a[j] > a[best]);
+                    if (cond) best = j;
+                    dibujarBurbujas(a, [best, j]);
+                    await sleep(180);
+                }
+                if (best !== i) {
+                    [a[i], a[best]] = [a[best], a[i]];
+                    dibujarBurbujas(a, [i, best]);
+                    await sleep(180);
+                }
+            }
+
+            const end = performance.now();
+            actualizarResultado(a, (end - start) / 1000);
+            return a;
+        }
+
+        async function insertionSortAnim(arr, asc = true) {
+            console.log(`▶ Insertion Sort ${asc ? 'ASC' : 'DESC'}`);
+            const a = arr.slice();
+            const start = performance.now();
+
+            for (let i = 1; i < a.length; i++) {
+                const key = a[i];
+                let j = i - 1;
+                while (j >= 0 && (asc ? a[j] > key : a[j] < key)) {
+                    a[j + 1] = a[j];
+                    j--;
+                    dibujarBurbujas(a, [j + 1, i]);
+                    await sleep(140);
+                }
+                a[j + 1] = key;
+                dibujarBurbujas(a, [j + 1]);
+                await sleep(140);
+            }
+
+            const end = performance.now();
+            actualizarResultado(a, (end - start) / 1000);
+            return a;
+        }
+
+        async function shellSortAnim(arr, asc = true) {
+            console.log(`▶ Shell Sort ${asc ? 'ASC' : 'DESC'}`);
+            const a = arr.slice();
+            const start = performance.now();
+
+            let gapStr = prompt('Introduce el valor inicial del gap:', 'Math.floor(n/2)');
+            let gap;
+            if (!gapStr || gapStr.trim().toLowerCase() === 'math.floor(n/2)') {
+                gap = Math.floor(a.length / 2);
+            } else {
+                gap = parseInt(gapStr, 10);
+                if (!Number.isFinite(gap) || gap <= 0) gap = Math.floor(a.length / 2);
+            }
+
+            for (; gap > 0; gap = Math.floor(gap / 2)) {
+                for (let i = gap; i < a.length; i++) {
+                    const temp = a[i];
+                    let j = i;
+                    while (j >= gap && (asc ? a[j - gap] > temp : a[j - gap] < temp)) {
+                        a[j] = a[j - gap];
+                        j -= gap;
+                        dibujarBurbujas(a, [j, j + gap]);
+                        await sleep(120);
+                    }
+                    a[j] = temp;
+                    dibujarBurbujas(a, [j]);
+                    await sleep(120);
+                }
+            }
+
+            const end = performance.now();
+            actualizarResultado(a, (end - start) / 1000);
+            return a;
+        }
+
+        async function merge(arr, l, m, r, asc) {
+            const n1 = m - l + 1;
+            const n2 = r - m;
+            const L = new Array(n1);
+            const R = new Array(n2);
+            for (let i = 0; i < n1; i++) L[i] = arr[l + i];
+            for (let j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
+
+            let i = 0, j = 0, k = l;
+            while (i < n1 && j < n2) {
+                const cond = asc ? (L[i] <= R[j]) : (L[i] >= R[j]);
+                arr[k] = cond ? L[i++] : R[j++];
+                dibujarBurbujas(arr, [k]);
+                await sleep(60);
+                k++;
+            }
+            while (i < n1) {
+                arr[k] = L[i++];
+                dibujarBurbujas(arr, [k]);
+                await sleep(60);
+                k++;
+            }
+            while (j < n2) {
+                arr[k] = R[j++];
+                dibujarBurbujas(arr, [k]);
+                await sleep(60);
+                k++;
+            }
+        }
+        async function mergeSortAnim(arr, l, r, asc) {
+            if (l >= r) return;
+            const m = l + Math.floor((r - l) / 2);
+            await mergeSortAnim(arr, l, m, asc);
+            await mergeSortAnim(arr, m + 1, r, asc);
+            await merge(arr, l, m, r, asc);
+        }
+        async function doMergeSort(arr, asc = true) {
+            console.log(`▶ Merge Sort ${asc ? 'ASC' : 'DESC'}`);
+            const a = arr.slice();
+            const start = performance.now();
+            await mergeSortAnim(a, 0, a.length - 1, asc);
+            const end = performance.now();
+            actualizarResultado(a, (end - start) / 1000);
+            return a;
+        }
+
+        // -------------------------------
+        // LISTENERS DE SORTEO
+        // -------------------------------
+        SordenarBtn?.addEventListener('click', async () => {
+            try {
+                console.log('🟨 Selection ASC');
+                sortText.textContent = 'SELECTION';
+                tiempoOrdenEl.textContent = '--';
+                listaOrdenadaEl.textContent = '--';
+                await selectionSortAnim(listaNumeros, true);
+            } catch (e) { console.error('❌ Error Selection ASC:', e); }
+        });
+
+        SordenarDesBtn?.addEventListener('click', async () => {
+            try {
+                console.log('🟨 Selection DESC');
+                sortText.textContent = 'SELECTION';
+                tiempoOrdenEl.textContent = '--';
+                listaOrdenadaEl.textContent = '--';
+                await selectionSortAnim(listaNumeros, false);
+            } catch (e) { console.error('❌ Error Selection DESC:', e); }
+        });
+
+        IordenarBtn?.addEventListener('click', async () => {
+            try {
+                console.log('🟧 Insertion ASC');
+                sortText.textContent = 'INSERTION';
+                tiempoOrdenEl.textContent = '--';
+                listaOrdenadaEl.textContent = '--';
+                await insertionSortAnim(listaNumeros, true);
+            } catch (e) { console.error('❌ Error Insertion ASC:', e); }
+        });
+
+        IordenarDesBtn?.addEventListener('click', async () => {
+            try {
+                console.log('🟧 Insertion DESC');
+                sortText.textContent = 'INSERTION';
+                tiempoOrdenEl.textContent = '--';
+                listaOrdenadaEl.textContent = '--';
+                await insertionSortAnim(listaNumeros, false);
+            } catch (e) { console.error('❌ Error Insertion DESC:', e); }
+        });
+
+        SHordenarBtn?.addEventListener('click', async () => {
+            try {
+                console.log('🟪 Shell ASC');
+                sortText.textContent = 'SHELL';
+                tiempoOrdenEl.textContent = '--';
+                listaOrdenadaEl.textContent = '--';
+                await shellSortAnim(listaNumeros, true);
+            } catch (e) { console.error('❌ Error Shell ASC:', e); }
+        });
+
+        SHordenarDesBtn?.addEventListener('click', async () => {
+            try {
+                console.log('🟪 Shell DESC');
+                sortText.textContent = 'SHELL';
+                tiempoOrdenEl.textContent = '--';
+                listaOrdenadaEl.textContent = '--';
+                await shellSortAnim(listaNumeros, false);
+            } catch (e) { console.error('❌ Error Shell DESC:', e); }
+        });
+
+        MordenarBtn?.addEventListener('click', async () => {
+            try {
+                console.log('🟦 Merge ASC');
+                sortText.textContent = 'MERGE';
+                tiempoOrdenEl.textContent = '--';
+                listaOrdenadaEl.textContent = '--';
+                await doMergeSort(listaNumeros, true);
+            } catch (e) { console.error('❌ Error Merge ASC:', e); }
+        });
+
+        MordenarDesBtn?.addEventListener('click', async () => {
+            try {
+                console.log('🟦 Merge DESC');
+                sortText.textContent = 'MERGE';
+                tiempoOrdenEl.textContent = '--';
+                listaOrdenadaEl.textContent = '--';
+                await doMergeSort(listaNumeros, false);
+            } catch (e) { console.error('❌ Error Merge DESC:', e); }
+        });
+
+        // Dibujo inicial vacío
+        dibujarBurbujas([]);
+
+    } catch (err) {
+        console.error('❌ Error inicial en sortback.js:', err);
+    }
 });
